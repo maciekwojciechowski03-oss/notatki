@@ -22,21 +22,23 @@
     max-width:680px;margin-inline:auto;min-height:100vh;
   }
   header{
-    position:sticky;top:0;background:var(--bg);z-index:10;
-    padding:16px 0 12px;display:flex;align-items:center;justify-content:space-between;
-    gap:12px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:var(--bg);z-index:10;padding:16px 0 0;
   }
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
   h1{font-size:26px;font-weight:700;margin:0;letter-spacing:-.5px}
-  .count{font-size:13px;color:var(--muted)}
   .btns{display:flex;gap:8px}
-  button{
-    font:inherit;border:none;border-radius:12px;padding:9px 14px;
-    background:var(--card2);color:var(--txt);cursor:pointer;transition:.15s;
-    font-size:15px;font-weight:500;
-  }
+  button{font:inherit;border:none;cursor:pointer;transition:.15s}
   button:active{transform:scale(.95)}
-  .icon-btn{background:transparent;padding:8px;font-size:20px;border-radius:10px}
-  #refresh{font-size:20px}
+  .icon-btn{background:transparent;padding:8px;font-size:20px;border-radius:10px;color:var(--txt)}
+  /* zakładki */
+  .tabs{display:flex;gap:8px;margin:14px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .tab{
+    flex:1;background:var(--card);color:var(--muted);border-radius:12px;
+    padding:10px 6px;font-size:15px;font-weight:600;display:flex;
+    flex-direction:column;align-items:center;gap:2px;
+  }
+  .tab.active{background:var(--accent);color:#fff}
+  .tab .c{font-size:12px;font-weight:500;opacity:.85}
   .list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
   .note{
     background:var(--card);border-radius:16px;padding:14px 14px 14px 12px;
@@ -50,13 +52,11 @@
   }
   .body{flex:1;min-width:0}
   .text{font-size:17px;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
-  .text[contenteditable="true"]{
-    outline:none;background:var(--card2);border-radius:8px;
-    padding:8px;margin:-4px 0;
-  }
-  .meta{font-size:12px;color:var(--muted);margin-top:6px}
-  .row-actions{display:flex;gap:4px;flex-shrink:0}
-  .row-actions button{padding:6px 8px;font-size:17px;background:transparent;border-radius:8px}
+  .text[contenteditable="true"]{outline:none;background:var(--card2);border-radius:8px;padding:8px;margin:-4px 0}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:8px;align-items:center}
+  .badge{background:var(--card2);padding:2px 8px;border-radius:20px;font-size:11px}
+  .row-actions{display:flex;gap:2px;flex-shrink:0}
+  .row-actions button{padding:6px 7px;font-size:16px;background:transparent;border-radius:8px;color:var(--txt)}
   .edit-ok{color:var(--ok)}
   .del{color:var(--danger)}
   .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:16px}
@@ -65,144 +65,144 @@
     position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);
     transform:translateX(-50%);background:var(--card2);color:var(--txt);
     padding:11px 18px;border-radius:14px;font-size:14px;opacity:0;
-    transition:.25s;pointer-events:none;z-index:100;box-shadow:0 8px 30px #0008;
+    transition:.25s;pointer-events:none;z-index:100;box-shadow:0 8px 30px #0008;max-width:90%;text-align:center;
   }
   .toast.show{opacity:1}
   .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--muted);
     border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .setup{background:var(--card);border:1px solid var(--line);border-radius:16px;
-    padding:16px;margin-top:14px;font-size:14px;line-height:1.5;color:var(--muted)}
-  .setup input{width:100%;margin-top:8px;padding:10px;border-radius:10px;border:1px solid var(--line);
-    background:var(--bg);color:var(--txt);font:inherit}
-  .setup b{color:var(--txt)}
+  /* menu przenoszenia */
+  .move-menu{display:flex;gap:6px;margin-top:8px}
+  .move-menu button{font-size:13px;padding:6px 12px;border-radius:10px;background:var(--card2);color:var(--txt)}
 </style>
 </head>
 <body>
 
 <header>
-  <div>
+  <div class="topbar">
     <h1>Notatki</h1>
-    <div class="count" id="count">—</div>
+    <div class="btns">
+      <button class="icon-btn" id="copy" title="Kopiuj folder">⧉</button>
+      <button class="icon-btn" id="refresh" title="Odśwież">⟳</button>
+    </div>
   </div>
-  <div class="btns">
-    <button class="icon-btn" id="copy" title="Kopiuj listę">⧉</button>
-    <button class="icon-btn" id="refresh" title="Odśwież">⟳</button>
-  </div>
+  <div class="tabs" id="tabs"></div>
 </header>
 
-<div id="setup" class="setup" style="display:none">
-  Podaj adres swojego Workera (jednorazowo, zapisze się w przeglądarce):
-  <input id="workerUrl" placeholder="https://notatki-glosowe.xxx.workers.dev" inputmode="url">
-  <button id="saveUrl" style="margin-top:10px;background:var(--accent);color:#fff;width:100%">Zapisz</button>
-</div>
-
 <div class="list" id="list"></div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 const $ = (s)=>document.querySelector(s);
-const LSKEY = "notatki_worker_url";
-let API = localStorage.getItem(LSKEY) || "";
+const API = "https://notatki-glosowe.maciekwojciechowski03.workers.dev";
+const FOLDERS = ["Praca","Zakupy","Inne"];
 let notes = [];
+let activeTab = "Praca";
+let editing = null;
+let moveOpen = null;
 
 function toast(msg){
   const t=$("#toast"); t.textContent=msg; t.classList.add("show");
   clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1800);
 }
 function fmtDate(ts){
-  const d=new Date(ts);
-  return d.toLocaleString("pl-PL",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  return new Date(ts).toLocaleString("pl-PL",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 }
 function esc(s){const e=document.createElement("div");e.textContent=s;return e.innerHTML;}
+function inFolder(f){ return notes.filter(n=>(n.folder||"Inne")===f).sort((a,b)=>a.ts-b.ts); }
 
 async function load(){
-  if(!API){ $("#setup").style.display="block"; return; }
-  $("#setup").style.display="none";
   $("#list").innerHTML='<div class="empty"><div class="spinner"></div></div>';
   try{
-    const r=await fetch(API.replace(/\/$/,"")+"/list");
+    const r=await fetch(API+"/list");
     const d=await r.json();
-    notes = (d.notes||[]).sort((a,b)=>a.ts-b.ts); // najstarsze u góry = 1.
+    notes=d.notes||[];
     render();
   }catch(e){
-    $("#list").innerHTML='<div class="empty"><div class="big">⚠️</div>Brak połączenia z Workerem.<br>Sprawdź adres.</div>';
+    $("#list").innerHTML='<div class="empty"><div class="big">⚠️</div>Brak połączenia z serwerem.</div>';
   }
 }
 
+function renderTabs(){
+  $("#tabs").innerHTML = FOLDERS.map(f=>{
+    const cnt=notes.filter(n=>(n.folder||"Inne")===f).length;
+    return `<button class="tab ${f===activeTab?'active':''}" onclick="switchTab('${f}')">
+      <span>${f}</span><span class="c">${cnt}</span></button>`;
+  }).join("");
+}
+function switchTab(f){ activeTab=f; moveOpen=null; render(); }
+
 function render(){
-  $("#count").textContent = notes.length ? notes.length+" notatek" : "brak notatek";
-  if(!notes.length){
-    $("#list").innerHTML='<div class="empty"><div class="big">🎤</div>Brak notatek.<br>Podyktuj coś przez Skrót.</div>';
+  renderTabs();
+  const items=inFolder(activeTab);
+  if(!items.length){
+    $("#list").innerHTML=`<div class="empty"><div class="big">🎤</div>Folder „${activeTab}" jest pusty.</div>`;
     return;
   }
-  $("#list").innerHTML = notes.map((n,i)=>`
+  $("#list").innerHTML=items.map((n,i)=>`
     <div class="note" data-id="${n.id}">
       <div class="num">${i+1}</div>
       <div class="body">
         <div class="text" id="t-${n.id}">${esc(n.text)}</div>
-        <div class="meta">${fmtDate(n.ts)}</div>
+        <div class="meta"><span>${fmtDate(n.ts)}</span></div>
+        ${moveOpen===n.id?`<div class="move-menu">
+          ${FOLDERS.filter(f=>f!==activeTab).map(f=>`<button onclick="move('${n.id}','${f}')">→ ${f}</button>`).join("")}
+        </div>`:""}
       </div>
       <div class="row-actions">
+        <button onclick="toggleMove('${n.id}')" title="Przenieś">📁</button>
         <button class="edit" onclick="startEdit('${n.id}')" title="Edytuj">✎</button>
         <button class="del" onclick="del('${n.id}')" title="Usuń">🗑</button>
       </div>
     </div>`).join("");
 }
 
-let editing=null;
+function toggleMove(id){ moveOpen = moveOpen===id?null:id; render(); }
+async function move(id,folder){
+  try{
+    await fetch(API+"/move",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,folder})});
+    const n=notes.find(x=>x.id===id); n.folder=folder; moveOpen=null;
+    toast("Przeniesiono do „"+folder+"\u201d"); render();
+  }catch(e){ toast("Błąd przenoszenia"); }
+}
+
 function startEdit(id){
   if(editing) return;
   editing=id;
   const el=$("#t-"+id);
   el.contentEditable="true"; el.focus();
-  // kursor na koniec
   const r=document.createRange(); r.selectNodeContents(el); r.collapse(false);
   const s=getSelection(); s.removeAllRanges(); s.addRange(r);
   const btn=document.querySelector(`.note[data-id="${id}"] .edit`);
-  btn.textContent="✓"; btn.classList.add("edit-ok");
-  btn.setAttribute("onclick",`saveEdit('${id}')`);
+  btn.textContent="✓"; btn.classList.add("edit-ok"); btn.setAttribute("onclick",`saveEdit('${id}')`);
 }
 async function saveEdit(id){
   const el=$("#t-"+id);
   const text=el.innerText.trim();
-  el.contentEditable="false";
-  editing=null;
+  el.contentEditable="false"; editing=null;
   const n=notes.find(x=>x.id===id);
   if(text===n.text){ render(); return; }
   try{
-    await fetch(API.replace(/\/$/,"")+"/edit",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({id,text})
-    });
+    await fetch(API+"/edit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,text})});
     n.text=text; toast("Zapisano"); render();
   }catch(e){ toast("Błąd zapisu"); render(); }
 }
 async function del(id){
   if(!confirm("Usunąć tę notatkę?")) return;
   try{
-    await fetch(API.replace(/\/$/,"")+"/delete",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({id})
-    });
+    await fetch(API+"/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});
     notes=notes.filter(x=>x.id!==id); toast("Usunięto"); render();
   }catch(e){ toast("Błąd usuwania"); }
 }
 
 $("#refresh").onclick=load;
 $("#copy").onclick=()=>{
-  if(!notes.length){toast("Brak notatek");return;}
-  const txt=notes.map((n,i)=>`${i+1}. ${n.text}`).join("\n");
-  navigator.clipboard.writeText(txt).then(()=>toast("Skopiowano listę"));
-};
-$("#saveUrl").onclick=()=>{
-  const v=$("#workerUrl").value.trim();
-  if(!v.startsWith("http")){toast("Nieprawidłowy URL");return;}
-  API=v; localStorage.setItem(LSKEY,v); load();
+  const items=inFolder(activeTab);
+  if(!items.length){toast("Folder pusty");return;}
+  const txt=items.map((n,i)=>`${i+1}. ${n.text}`).join("\n");
+  navigator.clipboard.writeText(txt).then(()=>toast("Skopiowano „"+activeTab+"\u201d"));
 };
 
-// auto-odświeżanie gdy wracasz do apki
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden && !editing) load(); });
 load();
 </script>
