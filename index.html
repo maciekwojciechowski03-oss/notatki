@@ -91,20 +91,13 @@
   </div>
 </header>
 
-<div id="setup" class="setup" style="display:none">
-  Podaj adres swojego Workera (jednorazowo, zapisze się w przeglądarce):
-  <input id="workerUrl" placeholder="https://notatki-glosowe.xxx.workers.dev" inputmode="url">
-  <button id="saveUrl" style="margin-top:10px;background:var(--accent);color:#fff;width:100%">Zapisz</button>
-</div>
-
 <div class="list" id="list"></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const $ = (s)=>document.querySelector(s);
-const LSKEY = "notatki_worker_url";
-let API = localStorage.getItem(LSKEY) || "";
+const API = "https://notatki-glosowe.maciekwojciechowski03.workers.dev";
 let notes = [];
 
 function toast(msg){
@@ -118,8 +111,6 @@ function fmtDate(ts){
 function esc(s){const e=document.createElement("div");e.textContent=s;return e.innerHTML;}
 
 async function load(){
-  if(!API){ $("#setup").style.display="block"; return; }
-  $("#setup").style.display="none";
   $("#list").innerHTML='<div class="empty"><div class="spinner"></div></div>';
   try{
     const r=await fetch(API.replace(/\/$/,"")+"/list");
@@ -196,12 +187,6 @@ $("#copy").onclick=()=>{
   const txt=notes.map((n,i)=>`${i+1}. ${n.text}`).join("\n");
   navigator.clipboard.writeText(txt).then(()=>toast("Skopiowano listę"));
 };
-$("#saveUrl").onclick=()=>{
-  const v=$("#workerUrl").value.trim();
-  if(!v.startsWith("http")){toast("Nieprawidłowy URL");return;}
-  API=v; localStorage.setItem(LSKEY,v); load();
-};
-
 // auto-odświeżanie gdy wracasz do apki
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden && !editing) load(); });
 load();
