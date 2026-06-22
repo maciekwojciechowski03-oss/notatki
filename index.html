@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0b0c">
+<title>Notatki</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b84fe'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='white'%3E%E2%9C%8E%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0b0c; --card:#1c1c1e; --card2:#2c2c2e;
+    --txt:#f2f2f7; --muted:#8e8e93; --accent:#0b84fe;
+    --danger:#ff453a; --ok:#30d158; --line:#3a3a3c;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px);
+    max-width:680px;margin-inline:auto;min-height:100vh;
+  }
+  header{
+    position:sticky;top:0;background:var(--bg);z-index:10;
+    padding:16px 0 12px;display:flex;align-items:center;justify-content:space-between;
+    gap:12px;border-bottom:1px solid var(--line);
+  }
+  h1{font-size:26px;font-weight:700;margin:0;letter-spacing:-.5px}
+  .count{font-size:13px;color:var(--muted)}
+  .btns{display:flex;gap:8px}
+  button{
+    font:inherit;border:none;border-radius:12px;padding:9px 14px;
+    background:var(--card2);color:var(--txt);cursor:pointer;transition:.15s;
+    font-size:15px;font-weight:500;
+  }
+  button:active{transform:scale(.95)}
+  .icon-btn{background:transparent;padding:8px;font-size:20px;border-radius:10px}
+  #refresh{font-size:20px}
+  .list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .note{
+    background:var(--card);border-radius:16px;padding:14px 14px 14px 12px;
+    display:flex;gap:12px;align-items:flex-start;animation:in .2s ease;
+  }
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .num{
+    min-width:30px;height:30px;border-radius:50%;background:var(--accent);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;flex-shrink:0;margin-top:1px;
+  }
+  .body{flex:1;min-width:0}
+  .text{font-size:17px;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
+  .text[contenteditable="true"]{
+    outline:none;background:var(--card2);border-radius:8px;
+    padding:8px;margin:-4px 0;
+  }
+  .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  .row-actions{display:flex;gap:4px;flex-shrink:0}
+  .row-actions button{padding:6px 8px;font-size:17px;background:transparent;border-radius:8px}
+  .edit-ok{color:var(--ok)}
+  .del{color:var(--danger)}
+  .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:16px}
+  .empty .big{font-size:46px;margin-bottom:12px}
+  .toast{
+    position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);
+    transform:translateX(-50%);background:var(--card2);color:var(--txt);
+    padding:11px 18px;border-radius:14px;font-size:14px;opacity:0;
+    transition:.25s;pointer-events:none;z-index:100;box-shadow:0 8px 30px #0008;
+  }
+  .toast.show{opacity:1}
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--muted);
+    border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .setup{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px;margin-top:14px;font-size:14px;line-height:1.5;color:var(--muted)}
+  .setup input{width:100%;margin-top:8px;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--bg);color:var(--txt);font:inherit}
+  .setup b{color:var(--txt)}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Notatki</h1>
+    <div class="count" id="count">—</div>
+  </div>
+  <div class="btns">
+    <button class="icon-btn" id="copy" title="Kopiuj listę">⧉</button>
+    <button class="icon-btn" id="refresh" title="Odśwież">⟳</button>
+  </div>
+</header>
+
+<div id="setup" class="setup" style="display:none">
+  Podaj adres swojego Workera (jednorazowo, zapisze się w przeglądarce):
+  <input id="workerUrl" placeholder="https://notatki-glosowe.xxx.workers.dev" inputmode="url">
+  <button id="saveUrl" style="margin-top:10px;background:var(--accent);color:#fff;width:100%">Zapisz</button>
+</div>
+
+<div class="list" id="list"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s)=>document.querySelector(s);
+const LSKEY = "notatki_worker_url";
+let API = localStorage.getItem(LSKEY) || "";
+let notes = [];
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1800);
+}
+function fmtDate(ts){
+  const d=new Date(ts);
+  return d.toLocaleString("pl-PL",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+}
+function esc(s){const e=document.createElement("div");e.textContent=s;return e.innerHTML;}
+
+async function load(){
+  if(!API){ $("#setup").style.display="block"; return; }
+  $("#setup").style.display="none";
+  $("#list").innerHTML='<div class="empty"><div class="spinner"></div></div>';
+  try{
+    const r=await fetch(API.replace(/\/$/,"")+"/list");
+    const d=await r.json();
+    notes = (d.notes||[]).sort((a,b)=>a.ts-b.ts); // najstarsze u góry = 1.
+    render();
+  }catch(e){
+    $("#list").innerHTML='<div class="empty"><div class="big">⚠️</div>Brak połączenia z Workerem.<br>Sprawdź adres.</div>';
+  }
+}
+
+function render(){
+  $("#count").textContent = notes.length ? notes.length+" notatek" : "brak notatek";
+  if(!notes.length){
+    $("#list").innerHTML='<div class="empty"><div class="big">🎤</div>Brak notatek.<br>Podyktuj coś przez Skrót.</div>';
+    return;
+  }
+  $("#list").innerHTML = notes.map((n,i)=>`
+    <div class="note" data-id="${n.id}">
+      <div class="num">${i+1}</div>
+      <div class="body">
+        <div class="text" id="t-${n.id}">${esc(n.text)}</div>
+        <div class="meta">${fmtDate(n.ts)}</div>
+      </div>
+      <div class="row-actions">
+        <button class="edit" onclick="startEdit('${n.id}')" title="Edytuj">✎</button>
+        <button class="del" onclick="del('${n.id}')" title="Usuń">🗑</button>
+      </div>
+    </div>`).join("");
+}
+
+let editing=null;
+function startEdit(id){
+  if(editing) return;
+  editing=id;
+  const el=$("#t-"+id);
+  el.contentEditable="true"; el.focus();
+  // kursor na koniec
+  const r=document.createRange(); r.selectNodeContents(el); r.collapse(false);
+  const s=getSelection(); s.removeAllRanges(); s.addRange(r);
+  const btn=document.querySelector(`.note[data-id="${id}"] .edit`);
+  btn.textContent="✓"; btn.classList.add("edit-ok");
+  btn.setAttribute("onclick",`saveEdit('${id}')`);
+}
+async function saveEdit(id){
+  const el=$("#t-"+id);
+  const text=el.innerText.trim();
+  el.contentEditable="false";
+  editing=null;
+  const n=notes.find(x=>x.id===id);
+  if(text===n.text){ render(); return; }
+  try{
+    await fetch(API.replace(/\/$/,"")+"/edit",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({id,text})
+    });
+    n.text=text; toast("Zapisano"); render();
+  }catch(e){ toast("Błąd zapisu"); render(); }
+}
+async function del(id){
+  if(!confirm("Usunąć tę notatkę?")) return;
+  try{
+    await fetch(API.replace(/\/$/,"")+"/delete",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({id})
+    });
+    notes=notes.filter(x=>x.id!==id); toast("Usunięto"); render();
+  }catch(e){ toast("Błąd usuwania"); }
+}
+
+$("#refresh").onclick=load;
+$("#copy").onclick=()=>{
+  if(!notes.length){toast("Brak notatek");return;}
+  const txt=notes.map((n,i)=>`${i+1}. ${n.text}`).join("\n");
+  navigator.clipboard.writeText(txt).then(()=>toast("Skopiowano listę"));
+};
+$("#saveUrl").onclick=()=>{
+  const v=$("#workerUrl").value.trim();
+  if(!v.startsWith("http")){toast("Nieprawidłowy URL");return;}
+  API=v; localStorage.setItem(LSKEY,v); load();
+};
+
+// auto-odświeżanie gdy wracasz do apki
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden && !editing) load(); });
+load();
+</script>
+</body>
+</html>
