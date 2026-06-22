@@ -240,6 +240,62 @@
 
   @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   @media (min-width:540px){.head h1{font-size:38px}}
+
+  /* ---------- PANEL LOGÓW (lewy dolny róg) ---------- */
+  .logs{
+    position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:55;
+    width:min(340px,calc(100vw - 36px));
+    background:rgba(255,255,255,.78);
+    backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);
+    border:1px solid rgba(0,0,0,.07);border-radius:18px;
+    box-shadow:0 10px 36px rgba(0,0,0,.13);
+    overflow:hidden;transition:transform .42s var(--spring),opacity .3s var(--ease);
+  }
+  .logs.hidden{transform:translateY(calc(100% + 30px)) scale(.96);opacity:0;pointer-events:none}
+  .logs-bar{
+    display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;user-select:none;
+    border-bottom:1px solid var(--line-2);
+  }
+  .logs-bar .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 0 0 rgba(52,199,89,.5);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,199,89,.45)}70%{box-shadow:0 0 0 7px rgba(52,199,89,0)}100%{box-shadow:0 0 0 0 rgba(52,199,89,0)}}
+  .logs-bar .lt{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);flex:1}
+  .logs-bar .ln{font-size:11px;font-weight:700;color:var(--ink-3);background:rgba(0,0,0,.06);padding:1px 7px;border-radius:7px}
+  .logs-bar .chev{width:16px;height:16px;color:var(--ink-3);transition:transform .3s var(--spring)}
+  .logs.collapsed .chev{transform:rotate(180deg)}
+  .logs-bar .chev svg{width:100%;height:100%;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .logs-body{max-height:230px;overflow-y:auto;padding:6px;transition:max-height .35s var(--ease)}
+  .logs.collapsed .logs-body{max-height:0;padding:0 6px}
+  .logs-body::-webkit-scrollbar{width:0}
+  .log-row{
+    display:flex;align-items:baseline;gap:7px;padding:7px 8px;border-radius:10px;font-size:12px;line-height:1.35;
+    animation:logIn .35s var(--ease) both;
+  }
+  .log-row:hover{background:rgba(0,0,0,.035)}
+  @keyframes logIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+  .log-time{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10.5px;color:var(--ink-3);white-space:nowrap;flex-shrink:0;font-weight:500}
+  .log-mid{flex:1;min-width:0;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .log-arrow{color:var(--ink-3);flex-shrink:0}
+  .log-arrow svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;transform:translateY(2px)}
+  .log-folder{
+    flex-shrink:0;font-size:10.5px;font-weight:700;letter-spacing:-.01em;color:#fff;
+    padding:2px 8px;border-radius:7px;white-space:nowrap;
+  }
+  .logs-empty{padding:18px 12px;text-align:center;font-size:12px;color:var(--ink-3)}
+  /* przycisk pokaż logi gdy ukryte */
+  .logs-toggle{
+    position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:54;
+    width:44px;height:44px;border:none;border-radius:14px;cursor:pointer;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(0,0,0,.07);box-shadow:0 6px 20px rgba(0,0,0,.12);
+    display:none;place-items:center;color:var(--ink-2);transition:transform .2s var(--spring)}
+  .logs-toggle.show{display:grid}
+  .logs-toggle:active{transform:scale(.9)}
+  .logs-toggle svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  @media (max-width:560px){
+    .logs{width:calc(100vw - 36px)}
+    .logs-body{max-height:150px}
+    .logs:not(.collapsed){bottom:calc(env(safe-area-inset-bottom) + 88px)}
+  }
 </style>
 </head>
 <body>
@@ -349,6 +405,20 @@
   </div>
 </div>
 
+<!-- PANEL LOGÓW -->
+<div class="logs collapsed" id="logs">
+  <div class="logs-bar" id="logsBar">
+    <span class="pulse"></span>
+    <span class="lt">Dziennik notatek</span>
+    <span class="ln" id="logsCount">0</span>
+    <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+  </div>
+  <div class="logs-body" id="logsBody"></div>
+</div>
+<button class="logs-toggle" id="logsToggle" aria-label="Pokaż dziennik">
+  <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+</button>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -407,7 +477,7 @@ async function load(){
   }
 }
 
-function renderAll(){renderSeg();renderHead();renderSub();renderList();}
+function renderAll(){renderSeg();renderHead();renderSub();renderList();renderLogs();}
 
 function renderSeg(){
   const seg=$("#seg");seg.innerHTML="";
@@ -721,6 +791,46 @@ async function saveFolders(){
   try{await fetch(API+"/folders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({folders})});}
   catch(e){toast("Nie udało się zapisać folderów");}
 }
+
+// ---------- PANEL LOGÓW ----------
+let logsCollapsed=true, logsHidden=false;
+function logTime(ts){
+  const d=new Date(ts);
+  const p=n=>String(n).padStart(2,"0");
+  return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function renderLogs(){
+  const body=$("#logsBody");
+  // wszystkie notatki, najnowsze u góry
+  const all=[...notes].sort((a,b)=>b.ts-a.ts);
+  $("#logsCount").textContent=all.length;
+  if(!all.length){
+    body.innerHTML='<div class="logs-empty">Brak notatek w dzienniku</div>';
+    return;
+  }
+  body.innerHTML=all.map(n=>{
+    const f=F(n.folder);
+    const grad=f?f.grad:"gray";
+    const fname=f?f.name:"Inne";
+    return `<div class="log-row">
+      <span class="log-time">${logTime(n.ts)}</span>
+      <span class="log-mid">${esc(n.text)}</span>
+      <span class="log-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      <span class="log-folder g-${grad}">${esc(fname)}</span>
+    </div>`;
+  }).join("");
+}
+function applyLogsState(){
+  $("#logs").classList.toggle("collapsed",logsCollapsed);
+  $("#logs").classList.toggle("hidden",logsHidden);
+  $("#logsToggle").classList.toggle("show",logsHidden);
+}
+$("#logsBar").onclick=()=>{logsCollapsed=!logsCollapsed;applyLogsState();};
+$("#logsToggle").onclick=()=>{logsHidden=false;logsCollapsed=false;applyLogsState();};
+// długie przytrzymanie paska = schowaj panel
+let logsHoldTimer=null;
+$("#logsBar").addEventListener("pointerdown",()=>{logsHoldTimer=setTimeout(()=>{logsHidden=true;applyLogsState();},650);});
+["pointerup","pointerleave","pointercancel"].forEach(ev=>$("#logsBar").addEventListener(ev,()=>clearTimeout(logsHoldTimer)));
 
 // ---------- STEROWANIE MODALAMI ----------
 function openSheet(id){$("#scrim").classList.add("show");$("#"+id).classList.add("show");document.body.style.overflow="hidden";}
