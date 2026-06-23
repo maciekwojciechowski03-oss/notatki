@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#f5f5f7">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>Notatki</title>
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230a84ff'/%3E%3Cstop offset='1' stop-color='%235e5ce6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Cpath d='M50 26c-7 0-12 5-12 12v10a12 12 0 0024 0V38c0-7-5-12-12-12z' fill='white'/%3E%3Cpath d='M34 48a16 16 0 0032 0M50 64v8M42 72h16' stroke='white' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
@@ -16,7 +17,28 @@
     --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
     --shadow-md:0 4px 16px rgba(0,0,0,.08);
     --shadow-lg:0 18px 50px rgba(0,0,0,.18);
+    --nav-bg:rgba(245,245,247,.72);
+    --hover:rgba(0,0,0,.05); --hover-2:rgba(0,0,0,.035);
+    --chip-bg:rgba(0,0,0,.05); --chip-ink:#6e6e73;
+    --field-bg:#f5f5f7; --field-focus:#fff;
+    --glass:rgba(255,255,255,.78); --glass-border:rgba(0,0,0,.07);
+    --scrim:rgba(0,0,0,.4);
     --radius:20px; --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#000; --surface:#1c1c1e; --ink:#f5f5f7; --ink-2:#aeaeb2; --ink-3:#8e8e93;
+      --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.07);
+      --blue:#0a84ff; --red:#ff453a; --green:#30d158;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.3); --shadow-md:0 4px 16px rgba(0,0,0,.4);
+      --shadow-lg:0 18px 50px rgba(0,0,0,.6);
+      --nav-bg:rgba(0,0,0,.72);
+      --hover:rgba(255,255,255,.08); --hover-2:rgba(255,255,255,.05);
+      --chip-bg:rgba(255,255,255,.1); --chip-ink:#aeaeb2;
+      --field-bg:#2c2c2e; --field-focus:#2c2c2e;
+      --glass:rgba(28,28,30,.82); --glass-border:rgba(255,255,255,.1);
+      --scrim:rgba(0,0,0,.6);
+    }
   }
   /* gradienty folderów */
   .g-blue{background:linear-gradient(135deg,#0a84ff,#0040dd)}
@@ -39,14 +61,14 @@
   svg{display:block}
 
   /* ---------- NAV (szkło) ---------- */
-  .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);background:rgba(245,245,247,.72);border-bottom:1px solid var(--line-2)}
+  .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);background:var(--nav-bg);border-bottom:1px solid var(--line-2)}
   .nav-inner{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 22px 10px;display:flex;align-items:center;justify-content:space-between;gap:14px}
   .brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;letter-spacing:-.02em}
   .brand .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;box-shadow:0 2px 8px rgba(10,132,255,.3)}
   .brand .mark svg{width:17px;height:17px}
   .nav-actions{display:flex;gap:4px}
   .ico{width:38px;height:38px;border:none;background:transparent;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:background .2s var(--ease),transform .2s var(--spring)}
-  .ico:hover{background:rgba(0,0,0,.05)}.ico:active{transform:scale(.88)}
+  .ico:hover{background:var(--hover)}.ico:active{transform:scale(.88)}
   .ico svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .ico.spin svg{animation:spin .6s var(--ease)}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -70,7 +92,7 @@
   .chip.on{box-shadow:0 4px 14px rgba(0,0,0,.12)}
   .chip.on .nm{color:var(--ink)}
   .chip.on .dot{transform:scale(1.05)}
-  .chip.add{background:transparent;box-shadow:none;border:1.5px dashed rgba(0,0,0,.18);color:var(--ink-3);padding:9px 13px}
+  .chip.add{background:transparent;box-shadow:none;border:1.5px dashed var(--line);color:var(--ink-3);padding:9px 13px}
   .chip.add svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
   .chip.add .nm{color:var(--ink-3)}
 
@@ -88,12 +110,12 @@
   .subbar{display:flex;gap:7px;flex-wrap:wrap;padding:6px 0 2px}
   .subchip{
     border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:-.01em;
-    padding:7px 12px;border-radius:11px;background:rgba(0,0,0,.05);color:var(--ink-2);
+    padding:7px 12px;border-radius:11px;background:var(--chip-bg);color:var(--chip-ink);
     display:flex;align-items:center;gap:6px;transition:background .2s,color .2s,transform .15s var(--spring)}
   .subchip:active{transform:scale(.93)}
-  .subchip.on{background:var(--ink);color:#fff}
+  .subchip.on{background:var(--ink);color:var(--bg)}
   .subchip .sc{font-size:10.5px;font-weight:700;opacity:.7}
-  .subchip.addsub{background:transparent;border:1.5px dashed rgba(0,0,0,.18);color:var(--ink-3)}
+  .subchip.addsub{background:transparent;border:1.5px dashed var(--line);color:var(--ink-3)}
   .subchip.addsub svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
 
   /* ---------- LISTA ---------- */
@@ -105,21 +127,23 @@
   .card:hover{box-shadow:var(--shadow-md)}
   @keyframes rise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
   /* checkbox */
-  .check{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.18);flex-shrink:0;margin-top:2px;cursor:pointer;display:grid;place-items:center;background:transparent;transition:border-color .2s,background .2s,transform .15s var(--spring)}
+  .check{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;margin-top:2px;cursor:pointer;display:grid;place-items:center;background:transparent;transition:border-color .2s,background .2s,transform .15s var(--spring)}
   .check:active{transform:scale(.85)}
   .check svg{width:15px;height:15px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
   .card.done .check{background:var(--green);border-color:var(--green)}
   .card.done .check svg{opacity:1}
   .idx{min-width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;letter-spacing:-.02em}
+  .pin{min-width:22px;height:22px;flex-shrink:0;margin-top:3px;display:grid;place-items:center;color:#ff9f0a}
+  .pin svg{width:18px;height:18px;fill:#ff9f0a;stroke:#ff9f0a;stroke-width:1.5}
   .c-body{flex:1;min-width:0}
   .c-text{font-size:16px;line-height:1.45;letter-spacing:-.01em;color:var(--ink);word-wrap:break-word;white-space:pre-wrap}
   .c-text[contenteditable="true"]{outline:none;background:rgba(0,113,227,.06);border:1px solid rgba(0,113,227,.25);border-radius:10px;padding:9px 11px;margin:-6px -4px}
   .card.done .c-text{color:var(--ink-3);text-decoration:line-through;text-decoration-color:rgba(0,0,0,.25)}
   .c-meta{margin-top:6px;font-size:12px;color:var(--ink-3);font-weight:500;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-  .c-tag{background:rgba(0,0,0,.05);padding:2px 8px;border-radius:7px;font-weight:600}
+  .c-tag{background:var(--chip-bg);padding:2px 8px;border-radius:7px;font-weight:600}
   .c-acts{display:flex;gap:1px;flex-shrink:0}
   .mini{width:30px;height:30px;border:none;background:transparent;border-radius:9px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);transition:background .2s,color .2s,transform .15s var(--spring)}
-  .mini:hover{background:rgba(0,0,0,.05);color:var(--ink)}.mini:active{transform:scale(.85)}
+  .mini:hover{background:var(--hover);color:var(--ink)}.mini:active{transform:scale(.85)}
   .mini svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .mini.save{color:var(--green)}.mini.danger:hover{background:rgba(255,59,48,.1);color:var(--red)}
 
@@ -129,7 +153,7 @@
   .done-head.collapsed .ch{transform:rotate(-90deg)}
   .done-head svg{width:100%;height:100%;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .done-head .t{font-size:13px;font-weight:700;color:var(--ink-3);letter-spacing:.02em;text-transform:uppercase}
-  .done-head .n{font-size:12px;font-weight:600;color:var(--ink-3);background:rgba(0,0,0,.05);padding:1px 8px;border-radius:8px}
+  .done-head .n{font-size:12px;font-weight:600;color:var(--ink-3);background:var(--chip-bg);padding:1px 8px;border-radius:8px}
   .done-list{display:flex;flex-direction:column;gap:11px;overflow:hidden}
   .done-list.hidden{display:none}
 
@@ -155,7 +179,7 @@
   .fab svg{width:22px;height:22px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
 
   /* ---------- MODAL (sheet) ---------- */
-  .scrim{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+  .scrim{position:fixed;inset:0;z-index:100;background:var(--scrim);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
   .scrim.show{opacity:1;pointer-events:auto}
   .sheet{
     position:fixed;left:0;right:0;bottom:0;z-index:101;
@@ -164,16 +188,16 @@
     max-width:720px;margin:0 auto;max-height:88vh;overflow-y:auto;
     transform:translateY(100%);transition:transform .42s var(--spring);box-shadow:0 -10px 50px rgba(0,0,0,.2)}
   .sheet.show{transform:translateY(0)}
-  .grip{width:38px;height:5px;border-radius:3px;background:rgba(0,0,0,.15);margin:0 auto 18px}
+  .grip{width:38px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 18px}
   .sheet h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
   .sheet .desc{font-size:14px;color:var(--ink-2);margin-bottom:18px;letter-spacing:-.01em}
   .field{margin-bottom:18px}
   .field label{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px;letter-spacing:-.01em}
   textarea,.inp{
-    width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--bg);
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--field-bg);
     border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;resize:none;letter-spacing:-.01em;
     transition:border-color .2s,background .2s}
-  textarea:focus,.inp:focus{outline:none;border-color:var(--blue);background:#fff}
+  textarea:focus,.inp:focus{outline:none;border-color:var(--blue);background:var(--field-focus)}
   textarea{min-height:88px;line-height:1.45}
 
   /* drzewo wyboru folderu w modalu */
@@ -202,7 +226,7 @@
   .swatch.sel{border-color:var(--ink);transform:scale(1.05)}
   .swatch svg{width:20px;height:20px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .iconrow{display:flex;gap:9px;flex-wrap:wrap}
-  .ipick{width:46px;height:46px;border-radius:13px;background:var(--bg);border:1.5px solid var(--line);cursor:pointer;display:grid;place-items:center;transition:border-color .2s,transform .15s var(--spring)}
+  .ipick{width:46px;height:46px;border-radius:13px;background:var(--field-bg);border:1.5px solid var(--line);cursor:pointer;display:grid;place-items:center;transition:border-color .2s,transform .15s var(--spring)}
   .ipick:active{transform:scale(.9)}
   .ipick.sel{border-color:var(--blue);background:rgba(0,113,227,.06)}
   .ipick svg{width:22px;height:22px;stroke:var(--ink);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -213,17 +237,17 @@
   .btn-primary{background:linear-gradient(135deg,#0a84ff,#0040dd);color:#fff}
   .btn-primary:hover{filter:brightness(1.05)}
   .btn-primary:disabled{opacity:.4;cursor:not-allowed;filter:none}
-  .btn-ghost{background:rgba(0,0,0,.05);color:var(--ink)}
+  .btn-ghost{background:var(--chip-bg);color:var(--ink)}
   .btn-danger{background:rgba(255,59,48,.1);color:var(--red)}
 
   /* lista folderów do zarządzania */
   .mgr{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
-  .mgr-item{background:var(--bg);border-radius:14px;padding:11px 13px}
+  .mgr-item{background:var(--field-bg);border-radius:14px;padding:11px 13px}
   .mgr-row{display:flex;align-items:center;gap:11px}
   .mgr-row .tdot{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
   .mgr-row .tdot svg{width:15px;height:15px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .mgr-row .mnm{flex:1;font-size:15px;font-weight:600;letter-spacing:-.01em}
-  .mgr-row .lock{font-size:11px;color:var(--ink-3);background:rgba(0,0,0,.05);padding:2px 8px;border-radius:7px;font-weight:600}
+  .mgr-row .lock{font-size:11px;color:var(--ink-3);background:var(--chip-bg);padding:2px 8px;border-radius:7px;font-weight:600}
   .mgr-subs{margin:9px 0 2px 39px;display:flex;flex-direction:column;gap:6px}
   .mgr-sub{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2)}
   .mgr-sub .sdot{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex-shrink:0}
@@ -241,13 +265,34 @@
   @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   @media (min-width:540px){.head h1{font-size:38px}}
 
+  /* ---------- WYSZUKIWARKA ---------- */
+  .searchbar{
+    display:none;align-items:center;gap:9px;margin-top:14px;
+    background:var(--field-bg);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;
+    animation:rise .3s var(--ease) both}
+  .searchbar.show{display:flex}
+  .searchbar .si{flex-shrink:0;color:var(--ink-3)}
+  .searchbar .si svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .sinp{flex:1;border:none;background:transparent;font-family:inherit;font-size:16px;color:var(--ink);letter-spacing:-.01em}
+  .sinp:focus{outline:none}
+  .sinp::placeholder{color:var(--ink-3)}
+  .sx{width:24px;height:24px;border:none;background:rgba(128,128,128,.25);border-radius:50%;cursor:pointer;display:grid;place-items:center;flex-shrink:0;color:var(--ink-2);opacity:0;transition:opacity .2s}
+  .searchbar.has-text .sx{opacity:1}
+  .sx svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
+
+  /* gwiazdka na karcie */
+  .mini.star svg{width:17px;height:17px}
+  .mini.starred{color:#ff9f0a}
+  .mini.starred svg{fill:#ff9f0a;stroke:#ff9f0a}
+  .card.star-on{box-shadow:0 0 0 1.5px rgba(255,159,10,.35),var(--shadow-sm)}
+
   /* ---------- PANEL LOGÓW (lewy dolny róg) ---------- */
   .logs{
     position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:55;
     width:min(340px,calc(100vw - 36px));
-    background:rgba(255,255,255,.78);
+    background:var(--glass);
     backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);
-    border:1px solid rgba(0,0,0,.07);border-radius:18px;
+    border:1px solid var(--glass-border);border-radius:18px;
     box-shadow:0 10px 36px rgba(0,0,0,.13);
     overflow:hidden;transition:transform .42s var(--spring),opacity .3s var(--ease);
   }
@@ -259,7 +304,7 @@
   .logs-bar .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 0 0 rgba(52,199,89,.5);animation:pulse 2.2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,199,89,.45)}70%{box-shadow:0 0 0 7px rgba(52,199,89,0)}100%{box-shadow:0 0 0 0 rgba(52,199,89,0)}}
   .logs-bar .lt{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);flex:1}
-  .logs-bar .ln{font-size:11px;font-weight:700;color:var(--ink-3);background:rgba(0,0,0,.06);padding:1px 7px;border-radius:7px}
+  .logs-bar .ln{font-size:11px;font-weight:700;color:var(--ink-3);background:var(--chip-bg);padding:1px 7px;border-radius:7px}
   .logs-bar .chev{width:16px;height:16px;color:var(--ink-3);transition:transform .3s var(--spring)}
   .logs.collapsed .chev{transform:rotate(180deg)}
   .logs-bar .chev svg{width:100%;height:100%;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -270,7 +315,7 @@
     display:flex;align-items:baseline;gap:7px;padding:7px 8px;border-radius:10px;font-size:12px;line-height:1.35;
     animation:logIn .35s var(--ease) both;
   }
-  .log-row:hover{background:rgba(0,0,0,.035)}
+  .log-row:hover{background:var(--hover-2)}
   @keyframes logIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
   .log-time{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10.5px;color:var(--ink-3);white-space:nowrap;flex-shrink:0;font-weight:500}
   .log-mid{flex:1;min-width:0;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -285,8 +330,8 @@
   .logs-toggle{
     position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:54;
     width:44px;height:44px;border:none;border-radius:14px;cursor:pointer;
-    background:rgba(255,255,255,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    border:1px solid rgba(0,0,0,.07);box-shadow:0 6px 20px rgba(0,0,0,.12);
+    background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--glass-border);box-shadow:0 6px 20px rgba(0,0,0,.12);
     display:none;place-items:center;color:var(--ink-2);transition:transform .2s var(--spring)}
   .logs-toggle.show{display:grid}
   .logs-toggle:active{transform:scale(.9)}
@@ -307,6 +352,7 @@
       <span>Notatki</span>
     </div>
     <div class="nav-actions">
+      <button class="ico" id="search" title="Szukaj" aria-label="Szukaj"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
       <button class="ico" id="copy" title="Kopiuj" aria-label="Kopiuj"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 012-2h9"/></svg></button>
       <button class="ico" id="refresh" title="Odśwież" aria-label="Odśwież"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-2.64-6.36M21 4v5h-5"/></svg></button>
     </div>
@@ -318,12 +364,21 @@
 </div>
 
 <div class="wrap">
+  <div class="searchbar" id="searchbar">
+    <span class="si"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+    <input class="sinp" id="searchInput" placeholder="Szukaj we wszystkich notatkach…" autocomplete="off">
+    <button class="sx" id="searchClear" aria-label="Wyczyść"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+</div>
+
+<div class="wrap">
   <div class="head">
     <div class="head-l">
       <h1><span class="badge" id="headBadge"></span><span id="headTitle">Praca</span></h1>
       <div class="sub" id="headSub"></div>
     </div>
     <div class="head-menu">
+      <button class="ico" id="editFolderBtn" title="Edytuj folder" aria-label="Edytuj folder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
       <button class="ico" id="addSubBtn" title="Dodaj podfolder" aria-label="Dodaj podfolder" style="display:none"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v6M9 14h6"/></svg></button>
     </div>
   </div>
@@ -447,11 +502,14 @@ const ICO={
   check:'<path d="M20 6L9 17l-5-5"/>',
   chevron:'<path d="M6 9l6 6 6-6"/>',
   x:'<path d="M18 6L6 18M6 6l12 12"/>',
-  plus:'<path d="M12 5v14M5 12h14"/>'
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  star:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 17l-5.2 2.8 1-5.8L3.5 9.2l5.9-.9z"/>'
 };
 
+const ALL_ID="__all__";
 let notes=[],folders=[],activeFolder="praca",activeSub=null;
-let editing=null,doneCollapsed=true;
+let editing=null,doneCollapsed=true,searchQuery="";
+let editFolderId=null; // tryb edycji w modalu folderu
 // stany modali
 let mNoteSel={folder:null,sub:null}, mMoveId=null, mMoveSel={folder:null,sub:null};
 let mFolderIcon=ICON_KEYS[0], mFolderColor="blue", mSubParent=null;
@@ -481,6 +539,13 @@ function renderAll(){renderSeg();renderHead();renderSub();renderList();renderLog
 
 function renderSeg(){
   const seg=$("#seg");seg.innerHTML="";
+  // wirtualny folder "Wszystkie"
+  const allCnt=notes.filter(n=>!n.done).length;
+  const ab=document.createElement("button");
+  ab.className="chip"+(activeFolder===ALL_ID?" on":"");
+  ab.innerHTML=`<span class="dot g-indigo"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg></span><span class="nm">Wszystkie</span>${allCnt?`<span class="cnt">${allCnt}</span>`:""}`;
+  ab.onclick=()=>{activeFolder=ALL_ID;activeSub=null;renderAll();};
+  seg.appendChild(ab);
   folders.forEach(f=>{
     const cnt=notes.filter(n=>n.folder===f.id&&!n.done).length;
     const b=document.createElement("button");
@@ -497,6 +562,16 @@ function renderSeg(){
 }
 
 function renderHead(){
+  if(activeFolder===ALL_ID){
+    $("#headBadge").className="badge g-indigo";
+    $("#headBadge").innerHTML=`<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>`;
+    $("#headTitle").textContent="Wszystkie";
+    const total=notes.filter(n=>!n.done).length;
+    $("#headSub").textContent=total?`${total} do zrobienia • wszystkie foldery`:"Wszystkie foldery";
+    $("#addSubBtn").style.display="none";
+    $("#editFolderBtn").style.display="none";
+    return;
+  }
   const f=F(activeFolder);if(!f)return;
   $("#headBadge").className="badge g-"+f.grad;
   $("#headBadge").innerHTML=`<svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg>`;
@@ -506,10 +581,15 @@ function renderHead(){
   $("#headSub").textContent=(total?`${total} do zrobienia`:"Brak aktywnych")+subTxt;
   $("#addSubBtn").style.display="grid";
   $("#addSubBtn").onclick=()=>openSubSheet(f.id);
+  $("#editFolderBtn").style.display=["praca","zakupy","inne"].includes(f.id)?"grid":"grid";
+  $("#editFolderBtn").onclick=()=>openFolderSheet(f.id);
 }
 
 function renderSub(){
-  const f=F(activeFolder);const bar=$("#subbar");bar.innerHTML="";
+  const bar=$("#subbar");bar.innerHTML="";
+  if(activeFolder===ALL_ID){bar.style.display="none";return;}
+  bar.style.display="flex";
+  const f=F(activeFolder);
   if(!f)return;
   // "Wszystkie" + podfoldery + dodaj
   const all=document.createElement("button");
@@ -532,17 +612,40 @@ function renderSub(){
   bar.appendChild(add);
 }
 
+function matchSearch(n){
+  if(!searchQuery)return true;
+  return n.text.toLowerCase().includes(searchQuery);
+}
+// sortowanie: gwiazdki najpierw, potem najnowsze
+function sortNotes(arr){
+  return arr.sort((a,b)=>{
+    if(!!b.star!==!!a.star)return (b.star?1:0)-(a.star?1:0);
+    return b.ts-a.ts;
+  });
+}
+
 function renderList(){
-  const f=F(activeFolder);const list=$("#list");
-  const scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub));
-  const active=scope.filter(n=>!n.done).sort((a,b)=>a.ts-b.ts);
+  const list=$("#list");
+  const searching=!!searchQuery;
+  let scope;
+  if(activeFolder===ALL_ID){
+    scope=notes.filter(matchSearch);
+  }else{
+    scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub)).filter(matchSearch);
+  }
+  const active=sortNotes(scope.filter(n=>!n.done));
   const done=scope.filter(n=>n.done).sort((a,b)=>b.ts-a.ts);
 
   let html="";
   if(!active.length&&!done.length){
-    list.innerHTML=`<div class="empty"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><h2>Pusto tutaj</h2><p>Dodaj notatkę przyciskiem poniżej albo podyktuj przez skrót.</p></div>`;
+    if(searching){
+      list.innerHTML=`<div class="empty"><div class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><h2>Brak wyników</h2><p>Nic nie pasuje do „${esc(searchQuery)}".</p></div>`;
+    }else{
+      list.innerHTML=`<div class="empty"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><h2>Pusto tutaj</h2><p>Dodaj notatkę przyciskiem poniżej albo podyktuj przez skrót.</p></div>`;
+    }
     return;
   }
+  // w widoku Wszystkie/szukania numeracja ciągła; w folderze od 1
   html+=active.map((n,i)=>cardHTML(n,i+1)).join("");
   if(done.length){
     html+=`<div class="done-head${doneCollapsed?' collapsed':''}" onclick="toggleDone()">
@@ -556,15 +659,20 @@ function renderList(){
 function cardHTML(n,idx){
   const f=F(n.folder);
   const subName=n.subfolder?((f&&f.subs.find(s=>s.id===n.subfolder))||{}).name:null;
-  const showTag=(activeSub===null&&subName);
-  return `<div class="card${n.done?' done':''}" data-id="${n.id}">
+  // w widoku Wszystkie pokazuj tag folderu; w folderze pokazuj podfolder
+  const allView=(activeFolder===ALL_ID||!!searchQuery);
+  let tag="";
+  if(allView&&f){tag=`<span class="c-tag g-${f.grad}" style="color:#fff">${esc(f.name)}${subName?" › "+esc(subName):""}</span>`;}
+  else if(activeSub===null&&subName){tag=`<span class="c-tag">${esc(subName)}</span>`;}
+  return `<div class="card${n.done?' done':''}${n.star?' star-on':''}" data-id="${n.id}">
     <button class="check" onclick="toggleNote('${n.id}')" aria-label="Odhacz"><svg viewBox="0 0 24 24">${ICO.check}</svg></button>
-    ${n.done?'':`<div class="idx g-${f?f.grad:'gray'}">${idx}</div>`}
+    ${(!n.done&&n.star)?`<div class="pin"><svg viewBox="0 0 24 24">${ICO.star}</svg></div>`:''}
     <div class="c-body">
       <div class="c-text" id="t-${n.id}">${esc(n.text)}</div>
-      <div class="c-meta"><span>${fmt(n.ts)}</span>${showTag?`<span class="c-tag">${esc(subName)}</span>`:""}</div>
+      <div class="c-meta"><span>${fmt(n.ts)}</span>${tag}</div>
     </div>
     <div class="c-acts">
+      <button class="mini star${n.star?' starred':''}" onclick="toggleStar('${n.id}')" aria-label="Priorytet"><svg viewBox="0 0 24 24">${ICO.star}</svg></button>
       <button class="mini" onclick="openMove('${n.id}')" aria-label="Przenieś"><svg viewBox="0 0 24 24">${ICO.move}</svg></button>
       <button class="mini edit" onclick="startEdit('${n.id}')" aria-label="Edytuj"><svg viewBox="0 0 24 24">${ICO.edit}</svg></button>
       <button class="mini danger" onclick="del('${n.id}')" aria-label="Usuń"><svg viewBox="0 0 24 24">${ICO.del}</svg></button>
@@ -582,6 +690,14 @@ async function toggleNote(id){
   renderList();
   try{await fetch(API+"/toggle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
   catch(e){n.done=!n.done;toast("Nie udało się zapisać");renderList();}
+}
+async function toggleStar(id){
+  const n=notes.find(x=>x.id===id);if(!n)return;
+  n.star=!n.star;
+  toast(n.star?"Przypięto na górę":"Odpięto");
+  renderList();
+  try{await fetch(API+"/star",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})});}
+  catch(e){n.star=!n.star;renderList();}
 }
 function startEdit(id){
   if(editing)return;editing=id;
@@ -609,10 +725,12 @@ async function del(id){
 
 // ---------- MODAL: DODAJ NOTATKĘ ----------
 function openNoteSheet(){
-  mNoteSel={folder:activeFolder,sub:activeSub};
+  const startFolder=(activeFolder===ALL_ID)?null:activeFolder;
+  const startSub=(activeFolder===ALL_ID)?null:activeSub;
+  mNoteSel={folder:startFolder,sub:startSub};
   $("#noteText").value="";
-  buildTree("noteTree",mNoteSel,sel=>{mNoteSel=sel;$("#noteSave").disabled=!mNoteSel.folder;});
-  $("#noteSave").disabled=!mNoteSel.folder;
+  buildTree("noteTree",mNoteSel,sel=>{mNoteSel=sel;$("#noteSave").disabled=!($("#noteText").value.trim()&&mNoteSel.folder);});
+  $("#noteSave").disabled=true;
   openSheet("sheetNote");
   setTimeout(()=>$("#noteText").focus(),350);
 }
@@ -621,13 +739,23 @@ $("#noteSave").onclick=async()=>{
   const text=$("#noteText").value.trim();
   if(!text||!mNoteSel.folder)return;
   closeSheets();
+  // #2 optymistycznie: pokaż natychmiast z tymczasowym id
+  const tmpId="tmp_"+Date.now();
+  const optimistic={id:tmpId,text,ts:Date.now(),folder:mNoteSel.folder,subfolder:mNoteSel.sub,done:false,star:false,_pending:true};
+  notes.push(optimistic);
+  activeFolder=mNoteSel.folder;activeSub=mNoteSel.sub;
+  renderAll();
   try{
     const r=await fetch(API+"/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,folder:mNoteSel.folder,subfolder:mNoteSel.sub})});
     const d=await r.json();
+    // zamień tymczasową na prawdziwą z serwera
+    notes=notes.filter(n=>n.id!==tmpId);
     if(d.note)notes.push(d.note);
-    activeFolder=mNoteSel.folder;activeSub=mNoteSel.sub;
     toast("Dodano notatkę");renderAll();
-  }catch(e){toast("Nie udało się dodać");}
+  }catch(e){
+    notes=notes.filter(n=>n.id!==tmpId);
+    toast("Nie udało się dodać");renderAll();
+  }
 };
 
 // ---------- MODAL: PRZENIEŚ ----------
@@ -693,9 +821,15 @@ function refreshTreeSel(c,sel){
   });
 }
 
-// ---------- MODAL: NOWY FOLDER ----------
-function openFolderSheet(){
-  $("#folderName").value="";mFolderIcon=ICON_KEYS[0];mFolderColor="blue";
+// ---------- MODAL: NOWY / EDYCJA FOLDERU ----------
+function openFolderSheet(editId){
+  editFolderId=(typeof editId==="string")?editId:null;
+  const ef=editFolderId?F(editFolderId):null;
+  $("#sheetFolder").querySelector("h3").textContent=ef?"Edytuj folder":"Nowy folder";
+  $("#folderSave").textContent=ef?"Zapisz zmiany":"Utwórz folder";
+  $("#folderName").value=ef?ef.name:"";
+  mFolderIcon=ef?ef.icon:ICON_KEYS[0];
+  mFolderColor=ef?ef.grad:"blue";
   // ikony
   const ir=$("#iconRow");ir.innerHTML="";
   ICON_KEYS.forEach(k=>{
@@ -714,17 +848,24 @@ function openFolderSheet(){
     b.onclick=()=>{mFolderColor=c;cr.querySelectorAll(".swatch").forEach(x=>{x.classList.remove("sel");x.innerHTML="";});b.classList.add("sel");b.innerHTML=`<svg viewBox="0 0 24 24">${ICO.check}</svg>`;};
     cr.appendChild(b);
   });
-  $("#folderSave").disabled=true;
+  $("#folderSave").disabled=!(ef&&ef.name);
   openSheet("sheetFolder");
   setTimeout(()=>$("#folderName").focus(),350);
 }
 $("#folderName")?.addEventListener("input",e=>{$("#folderSave").disabled=!e.target.value.trim();});
 $("#folderSave").onclick=async()=>{
   const name=$("#folderName").value.trim();if(!name)return;
-  const id="f"+Date.now().toString(36);
-  folders.push({id,name,icon:mFolderIcon,grad:mFolderColor,subs:[]});
-  await saveFolders();
-  activeFolder=id;activeSub=null;closeSheets();toast("Utworzono folder");renderAll();
+  if(editFolderId){
+    const f=F(editFolderId);
+    if(f){f.name=name;f.icon=mFolderIcon;f.grad=mFolderColor;}
+    await saveFolders();
+    closeSheets();toast("Zapisano folder");renderAll();
+  }else{
+    const id="f"+Date.now().toString(36);
+    folders.push({id,name,icon:mFolderIcon,grad:mFolderColor,subs:[]});
+    await saveFolders();
+    activeFolder=id;activeSub=null;closeSheets();toast("Utworzono folder");renderAll();
+  }
 };
 
 // ---------- MODAL: NOWY PODFOLDER ----------
@@ -841,12 +982,33 @@ $("#scrim").onclick=closeSheets;
 $("#fab").onclick=openNoteSheet;
 $("#refresh").onclick=function(){this.classList.remove("spin");void this.offsetWidth;this.classList.add("spin");load();};
 $("#copy").onclick=()=>{
-  const scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub)&&!n.done).sort((a,b)=>a.ts-b.ts);
+  let scope;
+  if(activeFolder===ALL_ID)scope=notes.filter(n=>!n.done);
+  else scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub)&&!n.done);
+  scope=sortNotes(scope.filter(n=>!searchQuery||n.text.toLowerCase().includes(searchQuery)));
   if(!scope.length){toast("Nic do skopiowania");return;}
   const txt=scope.map((n,i)=>`${i+1}. ${n.text}`).join("\n");
   navigator.clipboard.writeText(txt).then(()=>toast("Skopiowano listę"));
 };
-// długie przytrzymanie nazwy folderu = zarządzanie
+
+// ---------- WYSZUKIWARKA (#5) ----------
+$("#search").onclick=()=>{
+  const bar=$("#searchbar");
+  const showing=bar.classList.toggle("show");
+  if(showing){setTimeout(()=>$("#searchInput").focus(),50);}
+  else{searchQuery="";$("#searchInput").value="";bar.classList.remove("has-text");renderList();}
+};
+$("#searchInput").addEventListener("input",e=>{
+  searchQuery=e.target.value.trim().toLowerCase();
+  $("#searchbar").classList.toggle("has-text",!!searchQuery);
+  renderList();
+});
+$("#searchClear").onclick=()=>{
+  searchQuery="";$("#searchInput").value="";$("#searchbar").classList.remove("has-text");
+  $("#searchInput").focus();renderList();
+};
+
+// nazwa folderu = zarządzanie
 $("#headTitle").style.cursor="pointer";
 $("#headTitle").onclick=openManage;
 
