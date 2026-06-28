@@ -62,7 +62,16 @@
   .wrap{max-width:720px;margin:0 auto;padding:0 22px}
 
   /* ---------- SEGMENTY (foldery, scroll poziomy) ---------- */
-  .segwrap{padding:16px 0 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  /* toggle foldery */
+  .seg-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 0;cursor:pointer;user-select:none}
+  .seg-toggle-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
+  .seg-toggle-right{display:flex;align-items:center;gap:5px}
+  .seg-toggle-active{font-size:12px;font-weight:600;color:var(--ink-2)}
+  .seg-toggle-arrow{width:15px;height:15px;stroke:var(--ink-3);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease);flex-shrink:0}
+  .segwrap{padding:8px 0 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    max-height:200px;transition:max-height .35s var(--ease),padding .35s var(--ease),opacity .3s var(--ease);opacity:1}
+  .segwrap.collapsed{max-height:0;padding:0;opacity:0;pointer-events:none}
+  .seg-toggle-arrow.collapsed{transform:rotate(-90deg)}
   .segwrap::-webkit-scrollbar{display:none}
   .seg{display:inline-flex;gap:8px;padding:2px}
   .chip{
@@ -375,7 +384,14 @@
 </nav>
 
 <div class="wrap">
-  <div class="segwrap"><div class="seg" id="seg"></div></div>
+  <div class="seg-toggle" id="segToggle" onclick="toggleSeg()">
+    <span class="seg-toggle-label">Foldery</span>
+    <div class="seg-toggle-right">
+      <span class="seg-toggle-active" id="segActiveLabel"></span>
+      <svg class="seg-toggle-arrow" id="segToggleArrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div class="segwrap" id="segwrap"><div class="seg" id="seg"></div></div>
 </div>
 
 <div class="wrap">
@@ -539,6 +555,7 @@ const ICO={
 
 const ALL_ID="__all__";
 let notes=[],folders=[],activeFolder="praca",activeSub=null;
+let segCollapsed=localStorage.getItem('segCollapsed')==='1';
 let editing=null,doneCollapsed=true,searchQuery="";
 let editFolderId=null; // tryb edycji w modalu folderu
 // stany modali
@@ -592,6 +609,10 @@ function renderSeg(){
   add.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="nm">Folder</span>`;
   add.onclick=openFolderSheet;
   seg.appendChild(add);
+  // aktualizuj etykietę w toggle
+  const activeF=folders.find(f=>f.id===activeFolder);
+  const lbl=$("#segActiveLabel");
+  if(lbl){lbl.textContent=activeFolder===ALL_ID?"Wszystkie":(activeF?activeF.name:"");}
 }
 
 function renderHead(){
@@ -1049,6 +1070,19 @@ $("#searchClear").onclick=()=>{
 $("#headTitle").style.cursor="pointer";
 $("#headTitle").onclick=openManage;
 
+// ---------- FOLDERY TOGGLE ----------
+function applySegState(){
+  const sw=$("#segwrap"),arr=$("#segToggleArrow");
+  if(!sw||!arr)return;
+  if(segCollapsed){sw.classList.add("collapsed");arr.classList.add("collapsed");}
+  else{sw.classList.remove("collapsed");arr.classList.remove("collapsed");}
+}
+function toggleSeg(){
+  segCollapsed=!segCollapsed;
+  localStorage.setItem('segCollapsed',segCollapsed?'1':'0');
+  applySegState();
+}
+
 // ---------- USTAWIENIA ----------
 async function openSettings() {
   // Wczytaj aktualne instrukcje
@@ -1106,7 +1140,7 @@ function goToNote(el){
 }
 
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!editing)load();});
-load();
+load();applySegState();
 </script>
 </body>
 </html>
