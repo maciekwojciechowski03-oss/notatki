@@ -262,6 +262,18 @@
   .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translateX(-50%) translateY(20px);background:rgba(29,29,31,.92);color:#fff;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:13px 22px;border-radius:16px;font-size:14.5px;font-weight:500;letter-spacing:-.01em;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;z-index:200;max-width:88%;text-align:center;transition:opacity .3s var(--ease),transform .4s var(--spring)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  /* podświetlenie karty z dziennika */
+  @keyframes highlightPulse{
+    0%{box-shadow:0 0 0 0 rgba(0,113,227,.5),var(--shadow-sm)}
+    35%{box-shadow:0 0 0 7px rgba(0,113,227,.2),var(--shadow-md)}
+    100%{box-shadow:var(--shadow-sm)}
+  }
+  .card.highlight{animation:highlightPulse 1.6s var(--ease) both}
+  /* klikalne wiersze logu */
+  .log-row{cursor:pointer;border-radius:10px;transition:background .15s}
+  .log-row:hover{background:var(--hover)}
+  .log-row:active{background:var(--hover-2)}
+
   @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   @media (min-width:540px){.head h1{font-size:38px}}
 
@@ -970,7 +982,7 @@ function renderLogs(){
     const f=F(n.folder);
     const grad=f?f.grad:"gray";
     const fname=f?f.name:"Inne";
-    return `<div class="log-row">
+    return `<div class="log-row" data-note-id="${n.id}" data-folder="${n.folder}" data-sub="${n.subfolder||''}" onclick="goToNote(this)">
       <span class="log-time">${logTime(n.ts)}</span>
       <span class="log-mid">${esc(n.text)}</span>
       <span class="log-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -1056,6 +1068,34 @@ $("#settingsSave").onclick = async () => {
     else toast("Błąd zapisu");
   } catch(e) { toast("Błąd połączenia"); }
 };
+
+// ---------- PRZEJDŹ DO NOTATKI Z DZIENNIKA ----------
+function goToNote(el){
+  const id=el.dataset.noteId;
+  const folder=el.dataset.folder;
+  const subfolder=el.dataset.sub||null;
+  // nawiguj do folderu
+  activeFolder=folder;
+  activeSub=subfolder;
+  searchQuery="";
+  $("#searchInput").value="";
+  $("#searchbar").classList.remove("show","has-text");
+  renderAll();
+  // zwiń logi
+  logsCollapsed=true;
+  applyLogsState();
+  // przewiń i podświetl kartę
+  setTimeout(()=>{
+    const card=document.querySelector(`.card[data-id="${id}"]`);
+    if(card){
+      card.scrollIntoView({behavior:"smooth",block:"center"});
+      card.classList.remove("highlight");
+      void card.offsetWidth; // reset animacji
+      card.classList.add("highlight");
+      setTimeout(()=>card.classList.remove("highlight"),1700);
+    }
+  },120);
+}
 
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!editing)load();});
 load();
