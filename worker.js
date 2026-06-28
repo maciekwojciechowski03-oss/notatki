@@ -165,6 +165,19 @@ export default {
         return json({ ok: true });
       }
 
+      // ---- POBIERZ INSTRUKCJE AI ----
+      if (path === "/classify-prompt" && request.method === "GET") {
+        const prompt = await env.NOTATKI_KV.get("classify_prompt") || "";
+        return json({ ok: true, prompt });
+      }
+
+      // ---- ZAPISZ INSTRUKCJE AI ----
+      if (path === "/classify-prompt" && request.method === "POST") {
+        const { prompt } = await request.json();
+        await env.NOTATKI_KV.put("classify_prompt", prompt || "");
+        return json({ ok: true });
+      }
+
       if (path === "/test" && request.method === "GET") {
         const r = { hasKey: !!env.GEMINI_API_NOTES };
         if (env.GEMINI_API_NOTES) {
@@ -203,7 +216,9 @@ async function classify(text, folders, env) {
   if (!env.GEMINI_API_NOTES) return fallback;
   try {
     const names = folders.map((f) => f.name);
+    const customInstructions = await env.NOTATKI_KV.get("classify_prompt") || "";
     const prompt =
+      (customInstructions ? customInstructions + "\n\n" : "") +
       `Zaklasyfikuj notatkę do JEDNEJ z tych kategorii: ${names.join(", ")}. ` +
       `Wybierz najlepiej pasującą. Jeśli nie masz pewności, wybierz "Inne" (jeśli istnieje). ` +
       `Odpowiedz TYLKO dokładną nazwą jednej kategorii z listy, bez niczego więcej.\n\nNotatka: "${text}"`;
