@@ -597,7 +597,7 @@ const ICO={
 };
 
 const ALL_ID="__all__";
-let notes=[],folders=[],activeFolder="praca",activeSub=null;
+let notes=[],folders=[],activeFolder=ALL_ID,activeSub=null;
 let editing=null,doneCollapsed=true,searchQuery="";
 let editFolderId=null; // tryb edycji w modalu folderu
 // stany modali
@@ -830,16 +830,31 @@ function sortNotes(arr){
 function renderList(){
   const list=$("#list");
   const searching=!!searchQuery;
-  let scope;
-  if(activeFolder===ALL_ID){
-    scope=notes.filter(matchSearch);
+  let active,done;
+  if(searching){
+    // szukaj zawsze we WSZYSTKICH notatkach i folderach, w tym zrobionych
+    const allMatch=notes.filter(matchSearch);
+    active=sortNotes(allMatch.filter(n=>!n.done));
+    done=allMatch.filter(n=>n.done).sort((a,b)=>b.ts-a.ts);
   }else{
-    scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub)).filter(matchSearch);
+    let scope;
+    if(activeFolder===ALL_ID){
+      scope=notes;
+    }else{
+      scope=notes.filter(n=>n.folder===activeFolder&&(activeSub===null?true:n.subfolder===activeSub));
+    }
+    active=sortNotes(scope.filter(n=>!n.done));
+    done=scope.filter(n=>n.done).sort((a,b)=>b.ts-a.ts);
   }
-  const active=sortNotes(scope.filter(n=>!n.done));
-  const done=scope.filter(n=>n.done).sort((a,b)=>b.ts-a.ts);
 
   let html="";
+  // Aktualizuj licznik wyników podczas wyszukiwania
+  if(searching){
+    $("#headSub").textContent=
+      active.length+done.length>0
+        ?`${active.length+done.length} wyników we wszystkich folderach`
+        :"Brak wyników";
+  }
   if(!active.length&&!done.length){
     if(searching){
       list.innerHTML=`<div class="empty"><div class="glyph"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><h2>Brak wyników</h2><p>Nic nie pasuje do „${esc(searchQuery)}".</p></div>`;
