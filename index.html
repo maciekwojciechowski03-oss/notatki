@@ -106,26 +106,30 @@
 
   /* ---------- LISTA ---------- */
   .list{padding:8px 0 20px;display:flex;flex-direction:column;gap:11px}
+  /* kontener listy notatek */
+  .notes-block{background:var(--surface);border-radius:16px;border:1px solid var(--line);overflow:hidden}
   .card{
-    background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow-sm);border:1px solid var(--line);
-    display:flex;gap:12px;padding:15px 14px 15px 13px;align-items:flex-start;
-    animation:rise .45s var(--ease) both;transition:box-shadow .3s var(--ease),opacity .3s,transform .3s var(--ease)}
-  .card:hover{box-shadow:0 6px 28px rgba(124,58,237,.18),0 0 0 1px rgba(124,58,237,.15)}
+    background:transparent;border-radius:0;box-shadow:none;border:none;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    display:flex;gap:10px;padding:11px 13px;align-items:center;
+    animation:rise .3s var(--ease) both;transition:background .15s}
+  .card:last-child{border-bottom:none}
+  .card:hover{background:rgba(255,255,255,.03)}
   @keyframes rise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
   /* checkbox */
-  .check{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;margin-top:2px;cursor:pointer;display:grid;place-items:center;background:transparent;transition:border-color .2s,background .2s,transform .15s var(--spring)}
+  .check{width:19px;height:19px;border-radius:50%;border:1.5px solid #3a3a6a;flex-shrink:0;cursor:pointer;display:grid;place-items:center;background:transparent;transition:border-color .2s,background .2s,transform .15s var(--spring)}
   .check:active{transform:scale(.85)}
-  .check svg{width:15px;height:15px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+  .check svg{width:11px;height:11px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
   .card.done .check{background:var(--green);border-color:var(--green)}
   .card.done .check svg{opacity:1}
   .idx{min-width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;letter-spacing:-.02em}
   .pin{min-width:22px;height:22px;flex-shrink:0;margin-top:3px;display:grid;place-items:center;color:#ff9f0a}
   .pin svg{width:18px;height:18px;fill:#ff9f0a;stroke:#ff9f0a;stroke-width:1.5}
   .c-body{flex:1;min-width:0}
-  .c-text{font-size:16px;line-height:1.45;letter-spacing:-.01em;color:var(--ink);word-wrap:break-word;white-space:pre-wrap}
+  .c-text{font-size:14px;line-height:1.35;letter-spacing:-.01em;color:var(--ink);word-wrap:break-word;white-space:pre-wrap}
   .c-text[contenteditable="true"]{outline:none;background:rgba(0,113,227,.06);border:1px solid rgba(0,113,227,.25);border-radius:10px;padding:9px 11px;margin:-6px -4px}
   .card.done .c-text{color:var(--ink-3);text-decoration:line-through;text-decoration-color:rgba(0,0,0,.25)}
-  .c-meta{margin-top:6px;font-size:12px;color:var(--ink-3);font-weight:500;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .c-meta{margin-top:0;font-size:11px;color:var(--ink-3);font-weight:500;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .c-tag{background:var(--chip-bg);padding:2px 8px;border-radius:7px;font-weight:600}
   /* tag folderu z ikonką w widoku Wszystkie */
   .c-folder-tag{display:inline-flex;align-items:center;gap:6px;background:var(--chip-bg);padding:4px 10px 4px 5px;border-radius:10px}
@@ -145,7 +149,7 @@
   .done-head svg{width:100%;height:100%;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .done-head .t{font-size:13px;font-weight:700;color:var(--ink-3);letter-spacing:.02em;text-transform:uppercase}
   .done-head .n{font-size:12px;font-weight:600;color:var(--ink-3);background:var(--chip-bg);padding:1px 8px;border-radius:8px}
-  .done-list{display:flex;flex-direction:column;gap:11px;overflow:hidden}
+  .done-list{display:flex;flex-direction:column;gap:0;overflow:hidden}
   .done-list.hidden{display:none}
 
   /* ---------- STANY ---------- */
@@ -162,10 +166,10 @@
   .fab{
     position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom) + 22px);z-index:60;
     height:56px;padding:0 22px 0 18px;border:none;border-radius:30px;cursor:pointer;
-    background:linear-gradient(135deg,#0a84ff,#0040dd);color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;
     display:flex;align-items:center;gap:9px;font-family:inherit;font-size:16px;font-weight:600;letter-spacing:-.01em;
-    box-shadow:0 8px 24px rgba(10,132,255,.4);transition:transform .2s var(--spring),box-shadow .25s}
-  .fab:hover{box-shadow:0 12px 30px rgba(10,132,255,.5)}
+    box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),box-shadow .25s}
+  .fab:hover{box-shadow:0 12px 30px rgba(124,58,237,.5)}
   .fab:active{transform:scale(.93)}
   .fab svg{width:22px;height:22px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
 
@@ -284,10 +288,17 @@
   .sx svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
 
   /* gwiazdka na karcie */
-  .mini.star svg{width:17px;height:17px}
+  .mini.star svg{width:15px;height:15px}
   .mini.starred{color:#ff9f0a}
   .mini.starred svg{fill:#ff9f0a;stroke:#ff9f0a}
-  .card.star-on{box-shadow:0 0 0 1.5px rgba(255,159,10,.35),var(--shadow-sm)}
+  .card.star-on .check{border-color:rgba(255,159,10,.5)}
+  /* data/czas po prawej */
+  .c-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
+  .c-date{font-size:11px;color:var(--ink-3);font-weight:500;white-space:nowrap}
+  .c-time{font-size:10.5px;color:#3a3a6a;white-space:nowrap}
+  .c-sep{font-size:10px;color:#3a3a6a}
+  /* ikony zawsze widoczne */
+  .c-acts{display:flex;gap:1px;flex-shrink:0;opacity:1}
 
   /* ---------- PANEL LOGÓW (lewy dolny róg) ---------- */
   .logs{
@@ -536,6 +547,8 @@ let mFolderIcon=ICON_KEYS[0], mFolderColor="blue", mSubParent=null;
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1900);}
 function fmt(ts){return new Date(ts).toLocaleString("pl-PL",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});}
+function fmtDate(ts){return new Date(ts).toLocaleString("pl-PL",{day:"2-digit",month:"short"});}
+function fmtTime(ts){return new Date(ts).toLocaleString("pl-PL",{hour:"2-digit",minute:"2-digit"});}
 function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
 function F(id){return folders.find(f=>f.id===id);}
 function iconSvg(key){return ICONS[key]||ICONS.inne;}
@@ -666,12 +679,14 @@ function renderList(){
     return;
   }
   // w widoku Wszystkie/szukania numeracja ciągła; w folderze od 1
-  html+=active.map((n,i)=>cardHTML(n,i+1)).join("");
+  html+=`<div class="notes-block">${active.map((n,i)=>cardHTML(n,i+1)).join("")}</div>`;
   if(done.length){
     html+=`<div class="done-head${doneCollapsed?' collapsed':''}" onclick="toggleDone()">
       <span class="ch"><svg viewBox="0 0 24 24">${ICO.chevron}</svg></span>
       <span class="t">Zrobione</span><span class="n">${done.length}</span></div>
-      <div class="done-list${doneCollapsed?' hidden':''}">${done.map(n=>cardHTML(n,null)).join("")}</div>`;
+      <div class="notes-block done-list${doneCollapsed?' hidden':''}">
+        ${done.map(n=>cardHTML(n,null)).join("")}
+      </div>`;
   }
   list.innerHTML=html;
 }
@@ -679,21 +694,23 @@ function renderList(){
 function cardHTML(n,idx){
   const f=F(n.folder);
   const subName=n.subfolder?((f&&f.subs.find(s=>s.id===n.subfolder))||{}).name:null;
-  // w widoku Wszystkie pokazuj tag folderu; w folderze pokazuj podfolder
   const allView=(activeFolder===ALL_ID||!!searchQuery);
   let tag="";
   if(allView&&f){tag=`<span class="c-folder-tag"><span class="ftdot g-${f.grad}"><svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg></span><span class="ftnm">${esc(f.name)}${subName?" › "+esc(subName):""}</span></span>`;}
   else if(activeSub===null&&subName){tag=`<span class="c-tag">${esc(subName)}</span>`;}
   return `<div class="card${n.done?' done':''}${n.star?' star-on':''}" data-id="${n.id}">
     <button class="check" onclick="toggleNote('${n.id}')" aria-label="Odhacz"><svg viewBox="0 0 24 24">${ICO.check}</svg></button>
-    ${(!n.done&&n.star)?`<div class="pin"><svg viewBox="0 0 24 24">${ICO.star}</svg></div>`:''}
     <div class="c-body">
       <div class="c-text" id="t-${n.id}">${esc(n.text)}</div>
-      <div class="c-meta"><span>${fmt(n.ts)}</span>${tag}</div>
+      ${tag?`<div class="c-meta">${tag}</div>`:''}
+    </div>
+    <div class="c-right">
+      <span class="c-date">${fmtDate(n.ts)}</span>
+      <span class="c-sep">·</span>
+      <span class="c-time">${fmtTime(n.ts)}</span>
     </div>
     <div class="c-acts">
       <button class="mini star${n.star?' starred':''}" onclick="toggleStar('${n.id}')" aria-label="Priorytet"><svg viewBox="0 0 24 24">${ICO.star}</svg></button>
-      <button class="mini" onclick="openMove('${n.id}')" aria-label="Przenieś"><svg viewBox="0 0 24 24">${ICO.move}</svg></button>
       <button class="mini edit" onclick="startEdit('${n.id}')" aria-label="Edytuj"><svg viewBox="0 0 24 24">${ICO.edit}</svg></button>
       <button class="mini danger" onclick="del('${n.id}')" aria-label="Usuń"><svg viewBox="0 0 24 24">${ICO.del}</svg></button>
     </div>
