@@ -619,7 +619,7 @@ async function load(){
     const r=await fetch(API+"/list");const d=await r.json();
     notes=d.notes||[];folders=d.folders||[];
     if(!folders.length)folders=[{id:"inne",name:"Inne",icon:"inne",grad:"gray",subs:[]}];
-    if(!F(activeFolder))activeFolder=folders[0].id;
+    if(activeFolder!==ALL_ID&&!F(activeFolder))activeFolder=folders[0].id;
     if(activeSub&&!(F(activeFolder).subs||[]).some(s=>s.id===activeSub))activeSub=null;
     renderAll();
   }catch(e){
