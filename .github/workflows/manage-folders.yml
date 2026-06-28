@@ -24,6 +24,9 @@ on:
         description: 'Kolor (blue/green/gray/purple/orange/pink/teal/indigo)'
         required: false
         default: 'blue'
+      kv_namespace_id:
+        description: 'KV Namespace ID (z Cloudflare)'
+        required: true
 
 jobs:
   manage:
@@ -31,9 +34,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Zarządzaj folderami
+      - name: Zarządzaj folderami przez KV API
         env:
-          WORKER_URL: https://notatki-glosowe.maciekwojciechowski03.workers.dev
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          KV_NAMESPACE_ID: ${{ inputs.kv_namespace_id }}
           ACTION: ${{ inputs.action }}
           FOLDER_ID: ${{ inputs.folder_id }}
           FOLDER_NAME: ${{ inputs.folder_name }}
