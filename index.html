@@ -62,34 +62,39 @@
   .wrap{max-width:720px;margin:0 auto;padding:0 22px}
 
   /* ---------- SEGMENTY (foldery, scroll poziomy) ---------- */
-  /* toggle foldery */
-  .seg-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 0;cursor:pointer;user-select:none}
-  .seg-toggle-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
-  .seg-toggle-right{display:flex;align-items:center;gap:5px}
-  .seg-toggle-active{font-size:12px;font-weight:600;color:var(--ink-2)}
-  .seg-toggle-arrow{width:15px;height:15px;stroke:var(--ink-3);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease);flex-shrink:0}
-  .segwrap{padding:8px 0 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
-    max-height:200px;transition:max-height .35s var(--ease),padding .35s var(--ease),opacity .3s var(--ease);opacity:1}
-  .segwrap.collapsed{max-height:0;padding:0;opacity:0;pointer-events:none}
-  .seg-toggle-arrow.collapsed{transform:rotate(-90deg)}
-  .segwrap::-webkit-scrollbar{display:none}
-  .seg{display:inline-flex;gap:8px;padding:2px}
-  .chip{
-    border:none;background:var(--surface);box-shadow:var(--shadow-sm);cursor:pointer;font-family:inherit;
-    border-radius:14px;padding:9px 14px 9px 11px;display:flex;align-items:center;gap:8px;white-space:nowrap;
-    transition:transform .2s var(--spring),box-shadow .25s var(--ease);
-  }
-  .chip:active{transform:scale(.94)}
-  .chip .dot{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
-  .chip .dot svg{width:14px;height:14px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .chip .nm{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--ink-2);transition:color .25s}
-  .chip .cnt{font-size:11px;font-weight:700;color:var(--ink-3);background:rgba(0,0,0,.06);min-width:18px;height:17px;padding:0 5px;border-radius:8px;display:inline-grid;place-items:center;line-height:1}
-  .chip.on{box-shadow:0 4px 18px rgba(124,58,237,.35),0 0 0 1px rgba(124,58,237,.3)}
-  .chip.on .nm{color:var(--ink)}
-  .chip.on .dot{transform:scale(1.05)}
-  .chip.add{background:transparent;box-shadow:none;border:1.5px dashed var(--line);color:var(--ink-3);padding:9px 13px}
-  .chip.add svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
-  .chip.add .nm{color:var(--ink-3)}
+  /* ── dropdown folderów ── */
+  .fd-wrap{position:relative;padding:12px 0 4px}
+  .fd-trigger{
+    width:100%;display:flex;align-items:center;gap:10px;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:10px 14px;cursor:pointer;font-family:inherit;
+    transition:border-color .2s,box-shadow .2s;text-align:left}
+  .fd-trigger:hover{border-color:rgba(124,58,237,.3);box-shadow:0 0 0 3px rgba(124,58,237,.08)}
+  .fd-dot{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+  .fd-dot svg{width:14px;height:14px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .fd-name{flex:1;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .fd-cnt{font-size:12px;font-weight:700;color:var(--ink-3);background:var(--chip-bg);padding:1px 8px;border-radius:8px}
+  .fd-arrow{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease);flex-shrink:0}
+  .fd-arrow.open{transform:rotate(180deg)}
+  .fd-menu{
+    position:absolute;top:calc(100% - 6px);left:0;right:0;z-index:55;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;max-height:0;opacity:0;pointer-events:none;
+    transition:max-height .35s var(--ease),opacity .25s var(--ease);
+    box-shadow:var(--shadow-lg)}
+  .fd-menu.open{max-height:480px;opacity:1;pointer-events:auto}
+  .fd-item{
+    display:flex;align-items:center;gap:10px;padding:10px 14px;
+    cursor:pointer;border-bottom:1px solid var(--line-2);transition:background .15s}
+  .fd-item:last-child{border-bottom:none}
+  .fd-item:hover{background:var(--hover)}
+  .fd-item.active{background:rgba(124,58,237,.1)}
+  .fd-item .fi-dot{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+  .fd-item .fi-dot svg{width:13px;height:13px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .fd-item .fi-name{flex:1;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .fd-item .fi-cnt{font-size:11px;font-weight:700;color:var(--ink-3);background:var(--chip-bg);padding:1px 7px;border-radius:7px}
+  .fd-item.fi-add{border-top:1px solid var(--line);border-bottom:none;color:var(--ink-3)}
+  .fd-item.fi-add .fi-name{color:var(--ink-3);font-weight:500}
 
   /* ---------- NAGŁÓWEK FOLDERU ---------- */
   .head{padding:24px 0 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -384,14 +389,15 @@
 </nav>
 
 <div class="wrap">
-  <div class="seg-toggle" id="segToggle" onclick="toggleSeg()">
-    <span class="seg-toggle-label">Foldery</span>
-    <div class="seg-toggle-right">
-      <span class="seg-toggle-active" id="segActiveLabel"></span>
-      <svg class="seg-toggle-arrow" id="segToggleArrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
+  <div class="fd-wrap" id="fdWrap">
+    <button class="fd-trigger" id="fdTrigger" onclick="toggleFolderDrop(event)">
+      <span class="fd-dot g-indigo" id="fdDot"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg></span>
+      <span class="fd-name" id="fdName">Wszystkie</span>
+      <span class="fd-cnt" id="fdCnt"></span>
+      <svg class="fd-arrow" id="fdArrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="fd-menu" id="fdMenu"></div>
   </div>
-  <div class="segwrap" id="segwrap"><div class="seg" id="seg"></div></div>
 </div>
 
 <div class="wrap">
@@ -555,7 +561,6 @@ const ICO={
 
 const ALL_ID="__all__";
 let notes=[],folders=[],activeFolder="praca",activeSub=null;
-let segCollapsed=localStorage.getItem('segCollapsed')==='1';
 let editing=null,doneCollapsed=true,searchQuery="";
 let editFolderId=null; // tryb edycji w modalu folderu
 // stany modali
@@ -588,32 +593,53 @@ async function load(){
 function renderAll(){renderSeg();renderHead();renderSub();renderList();renderLogs();}
 
 function renderSeg(){
-  const seg=$("#seg");seg.innerHTML="";
-  // wirtualny folder "Wszystkie"
+  const menu=$("#fdMenu");if(!menu)return;
   const allCnt=notes.filter(n=>!n.done).length;
-  const ab=document.createElement("button");
-  ab.className="chip"+(activeFolder===ALL_ID?" on":"");
-  ab.innerHTML=`<span class="dot g-indigo"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg></span><span class="nm">Wszystkie</span>${allCnt?`<span class="cnt">${allCnt}</span>`:""}`;
-  ab.onclick=()=>{activeFolder=ALL_ID;activeSub=null;renderAll();};
-  seg.appendChild(ab);
-  folders.forEach(f=>{
-    const cnt=notes.filter(n=>n.folder===f.id&&!n.done).length;
-    const b=document.createElement("button");
-    b.className="chip"+(f.id===activeFolder?" on":"");
-    b.innerHTML=`<span class="dot g-${f.grad}"><svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg></span><span class="nm">${esc(f.name)}</span>${cnt?`<span class="cnt">${cnt}</span>`:""}`;
-    b.onclick=()=>{activeFolder=f.id;activeSub=null;renderAll();};
-    seg.appendChild(b);
-  });
-  const add=document.createElement("button");
-  add.className="chip add";
-  add.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="nm">Folder</span>`;
-  add.onclick=openFolderSheet;
-  seg.appendChild(add);
-  // aktualizuj etykietę w toggle
+  // aktualizuj trigger
   const activeF=folders.find(f=>f.id===activeFolder);
-  const lbl=$("#segActiveLabel");
-  if(lbl){lbl.textContent=activeFolder===ALL_ID?"Wszystkie":(activeF?activeF.name:"");}
+  const grad=activeF?activeF.grad:"indigo";
+  const icon=activeF?`<svg viewBox="0 0 24 24">${iconSvg(activeF.icon)}</svg>`:`<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>`;
+  const activeCnt=activeF?notes.filter(n=>n.folder===activeF.id&&!n.done).length:allCnt;
+  const dot=$("#fdDot");if(dot){dot.className="fd-dot g-"+grad;dot.innerHTML=icon;}
+  const nm=$("#fdName");if(nm)nm.textContent=activeF?activeF.name:"Wszystkie";
+  const cnt=$("#fdCnt");if(cnt){cnt.textContent=activeCnt||"";cnt.style.display=activeCnt?"":"none";}
+  // buduj menu
+  const items=[];
+  // Wszystkie
+  items.push(`<div class="fd-item${activeFolder===ALL_ID?" active":""}" onclick="selectFolder(null)">
+    <span class="fi-dot g-indigo"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg></span>
+    <span class="fi-name">Wszystkie</span>
+    ${allCnt?`<span class="fi-cnt">${allCnt}</span>`:""}
+  </div>`);
+  folders.forEach(f=>{
+    const c=notes.filter(n=>n.folder===f.id&&!n.done).length;
+    items.push(`<div class="fd-item${f.id===activeFolder?" active":""}" onclick="selectFolder('${f.id}')">
+      <span class="fi-dot g-${f.grad}"><svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg></span>
+      <span class="fi-name">${esc(f.name)}</span>
+      ${c?`<span class="fi-cnt">${c}</span>`:""}
+    </div>`);
+  });
+  items.push(`<div class="fd-item fi-add" onclick="closeFolderDrop();openFolderSheet()">
+    <span class="fi-dot" style="background:var(--chip-bg)"><svg viewBox="0 0 24 24" style="stroke:var(--ink-3)"><path d="M12 5v14M5 12h14"/></svg></span>
+    <span class="fi-name">Nowy folder…</span>
+  </div>`);
+  menu.innerHTML=items.join("");
 }
+function selectFolder(id){
+  activeFolder=id||ALL_ID;activeSub=null;
+  closeFolderDrop();renderAll();
+}
+let _fdOpen=false;
+function toggleFolderDrop(e){e&&e.stopPropagation();_fdOpen=!_fdOpen;
+  const m=$("#fdMenu"),a=$("#fdArrow");
+  if(_fdOpen){m.classList.add("open");a.classList.add("open");}
+  else{m.classList.remove("open");a.classList.remove("open");}
+}
+function closeFolderDrop(){_fdOpen=false;
+  $("#fdMenu")?.classList.remove("open");
+  $("#fdArrow")?.classList.remove("open");
+}
+document.addEventListener("click",e=>{if(!e.target.closest("#fdWrap"))closeFolderDrop();});
 
 function renderHead(){
   if(activeFolder===ALL_ID){
@@ -1070,19 +1096,6 @@ $("#searchClear").onclick=()=>{
 $("#headTitle").style.cursor="pointer";
 $("#headTitle").onclick=openManage;
 
-// ---------- FOLDERY TOGGLE ----------
-function applySegState(){
-  const sw=$("#segwrap"),arr=$("#segToggleArrow");
-  if(!sw||!arr)return;
-  if(segCollapsed){sw.classList.add("collapsed");arr.classList.add("collapsed");}
-  else{sw.classList.remove("collapsed");arr.classList.remove("collapsed");}
-}
-function toggleSeg(){
-  segCollapsed=!segCollapsed;
-  localStorage.setItem('segCollapsed',segCollapsed?'1':'0');
-  applySegState();
-}
-
 // ---------- USTAWIENIA ----------
 async function openSettings() {
   // Wczytaj aktualne instrukcje
@@ -1140,7 +1153,7 @@ function goToNote(el){
 }
 
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!editing)load();});
-load();applySegState();
+load();
 </script>
 </body>
 </html>
