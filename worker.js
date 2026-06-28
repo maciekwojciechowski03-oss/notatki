@@ -22,7 +22,7 @@
 // ============================================================
 
 const DEFAULT_FOLDERS = [
-  { id: "praca",  name: "Praca",  icon: "praca",  grad: "blue",  subs: [] },
+  { id: "praca",  name: "Praca HM", icon: "praca",  grad: "blue",  subs: [] },
   { id: "zakupy", name: "Zakupy", icon: "zakupy", grad: "green", subs: [] },
   { id: "inne",   name: "Inne",   icon: "inne",   grad: "gray",  subs: [] },
 ];
