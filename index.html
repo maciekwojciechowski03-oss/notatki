@@ -95,6 +95,14 @@
   .fd-item .fi-cnt{font-size:11px;font-weight:700;color:var(--ink-3);background:var(--chip-bg);padding:1px 7px;border-radius:7px}
   .fd-item.fi-add{border-top:1px solid var(--line);border-bottom:none;color:var(--ink-3)}
   .fd-item.fi-add .fi-name{color:var(--ink-3);font-weight:500}
+  /* drag & drop */
+  .fd-item[draggable]{cursor:default}
+  .fi-drag{width:22px;height:22px;display:grid;place-items:center;flex-shrink:0;cursor:grab;color:var(--ink-3);opacity:.4;border-radius:5px;transition:opacity .15s}
+  .fi-drag:hover{opacity:1;background:var(--hover)}
+  .fi-drag:active{cursor:grabbing}
+  .fi-drag svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+  .fd-item.drag-over{background:rgba(124,58,237,.15);border-top:2px solid #7c3aed}
+  .fd-item.dragging{opacity:.35;background:rgba(124,58,237,.08)}
 
   /* ---------- NAGŁÓWEK FOLDERU ---------- */
   .head{padding:24px 0 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -613,7 +621,8 @@ function renderSeg(){
   </div>`);
   folders.forEach(f=>{
     const c=notes.filter(n=>n.folder===f.id&&!n.done).length;
-    items.push(`<div class="fd-item${f.id===activeFolder?" active":""}" onclick="selectFolder('${f.id}')">
+    items.push(`<div class="fd-item${f.id===activeFolder?" active":""}" draggable="true" data-fid="${f.id}" onclick="selectFolder('${f.id}')">
+      <span class="fi-drag" onmousedown="event.stopPropagation()" title="Przeciągnij"><svg viewBox="0 0 24 24"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
       <span class="fi-dot g-${f.grad}"><svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg></span>
       <span class="fi-name">${esc(f.name)}</span>
       ${c?`<span class="fi-cnt">${c}</span>`:""}
@@ -624,6 +633,84 @@ function renderSeg(){
     <span class="fi-name">Nowy folder…</span>
   </div>`);
   menu.innerHTML=items.join("");
+  initFolderDrag();
+}
+function initFolderDrag(){
+  const menu=$("#fdMenu");if(!menu)return;
+  let dragSrc=null;
+  menu.querySelectorAll(".fd-item[draggable]").forEach(item=>{
+    item.addEventListener("dragstart",e=>{
+      dragSrc=item;
+      item.classList.add("dragging");
+      e.dataTransfer.effectAllowed="move";
+    });
+    item.addEventListener("dragend",()=>{
+      item.classList.remove("dragging");
+      menu.querySelectorAll(".fd-item").forEach(i=>i.classList.remove("drag-over"));
+    });
+    item.addEventListener("dragover",e=>{
+      e.preventDefault();e.dataTransfer.dropEffect="move";
+      if(item!==dragSrc){
+        menu.querySelectorAll(".fd-item").forEach(i=>i.classList.remove("drag-over"));
+        item.classList.add("drag-over");
+      }
+    });
+    item.addEventListener("drop",e=>{
+      e.preventDefault();
+      if(dragSrc&&dragSrc!==item){
+        // znajdź indeksy i przestaw
+        const ids=[...menu.querySelectorAll(".fd-item[data-fid]")].map(i=>i.dataset.fid);
+        const fromIdx=ids.indexOf(dragSrc.dataset.fid);
+        const toIdx=ids.indexOf(item.dataset.fid);
+        if(fromIdx!==-1&&toIdx!==-1){
+          const moved=folders.splice(fromIdx,1)[0];
+          folders.splice(toIdx,0,moved);
+          saveFolders();
+          renderSeg();
+        }
+      }
+      menu.querySelectorAll(".fd-item").forEach(i=>i.classList.remove("drag-over"));
+    });
+  });
+  // touch support
+  let touchDrag=null,touchClone=null;
+  menu.querySelectorAll(".fi-drag").forEach(handle=>{
+    handle.addEventListener("touchstart",e=>{
+      const item=handle.closest(".fd-item[data-fid]");if(!item)return;
+      e.preventDefault();
+      touchDrag=item;item.classList.add("dragging");
+      touchClone=item.cloneNode(true);
+      touchClone.style.cssText="position:fixed;pointer-events:none;opacity:.7;z-index:999;width:"+item.offsetWidth+"px;border-radius:10px;background:var(--surface)";
+      document.body.appendChild(touchClone);
+    },{passive:false});
+    handle.addEventListener("touchmove",e=>{
+      if(!touchDrag)return;e.preventDefault();
+      const t=e.touches[0];
+      touchClone.style.left=(t.clientX-60)+"px";
+      touchClone.style.top=(t.clientY-20)+"px";
+      const el=document.elementFromPoint(t.clientX,t.clientY)?.closest(".fd-item[data-fid]");
+      menu.querySelectorAll(".fd-item").forEach(i=>i.classList.remove("drag-over"));
+      if(el&&el!==touchDrag)el.classList.add("drag-over");
+    },{passive:false});
+    handle.addEventListener("touchend",e=>{
+      if(!touchDrag)return;
+      const t=e.changedTouches[0];
+      const target=document.elementFromPoint(t.clientX,t.clientY)?.closest(".fd-item[data-fid]");
+      if(target&&target!==touchDrag){
+        const ids=[...menu.querySelectorAll(".fd-item[data-fid]")].map(i=>i.dataset.fid);
+        const fromIdx=ids.indexOf(touchDrag.dataset.fid);
+        const toIdx=ids.indexOf(target.dataset.fid);
+        if(fromIdx!==-1&&toIdx!==-1){
+          const moved=folders.splice(fromIdx,1)[0];
+          folders.splice(toIdx,0,moved);
+          saveFolders();renderSeg();
+        }
+      }
+      touchDrag.classList.remove("dragging");
+      touchClone?.remove();touchClone=null;touchDrag=null;
+      menu.querySelectorAll(".fd-item").forEach(i=>i.classList.remove("drag-over"));
+    });
+  });
 }
 function selectFolder(id){
   activeFolder=id||ALL_ID;activeSub=null;
