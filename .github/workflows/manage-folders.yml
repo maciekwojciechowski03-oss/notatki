@@ -1,0 +1,92 @@
+name: 📁 Zarządzaj folderami
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Akcja (add / remove)'
+        required: true
+        type: choice
+        options:
+          - add
+          - remove
+      folder_id:
+        description: 'ID folderu (np. praca_oj)'
+        required: true
+      folder_name:
+        description: 'Nazwa folderu (np. Praca O&J)'
+        required: false
+      folder_icon:
+        description: 'Ikona (praca/zakupy/inne/dom/auto/narzedzia/gwiazda/serce/bateria/flaga)'
+        required: false
+        default: 'inne'
+      folder_color:
+        description: 'Kolor (blue/green/gray/purple/orange/pink/teal/indigo)'
+        required: false
+        default: 'blue'
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Zarządzaj folderami
+        env:
+          WORKER_URL: https://notatki-glosowe.maciekwojciechowski03.workers.dev
+          ACTION: ${{ inputs.action }}
+          FOLDER_ID: ${{ inputs.folder_id }}
+          FOLDER_NAME: ${{ inputs.folder_name }}
+          FOLDER_ICON: ${{ inputs.folder_icon }}
+          FOLDER_COLOR: ${{ inputs.folder_color }}
+        run: |
+          python3 << 'PYEOF'
+          import os, json
+          import urllib.request
+
+          url = os.environ['WORKER_URL']
+          action = os.environ['ACTION']
+          folder_id = os.environ['FOLDER_ID']
+          folder_name = os.environ.get('FOLDER_NAME', '')
+          folder_icon = os.environ.get('FOLDER_ICON', 'inne')
+          folder_color = os.environ.get('FOLDER_COLOR', 'blue')
+
+          # Pobierz aktualne dane
+          with urllib.request.urlopen(url + '/list') as r:
+              data = json.loads(r.read())
+
+          folders = data.get('folders', [])
+
+          if action == 'add':
+              if not any(f['id'] == folder_id for f in folders):
+                  folders.append({
+                      'id': folder_id,
+                      'name': folder_name,
+                      'icon': folder_icon,
+                      'grad': folder_color,
+                      'subs': []
+                  })
+                  print(f'Dodaje folder: {folder_name}')
+              else:
+                  print(f'Folder {folder_id} juz istnieje')
+
+          elif action == 'remove':
+              before = len(folders)
+              folders = [f for f in folders if f['id'] != folder_id]
+              print(f'Usuwam folder: {folder_id} (bylo {before}, teraz {len(folders)})')
+
+          # Zapisz
+          payload = json.dumps({'folders': folders}).encode()
+          req = urllib.request.Request(
+              url + '/folders',
+              data=payload,
+              headers={'Content-Type': 'application/json'},
+              method='POST'
+          )
+          with urllib.request.urlopen(req) as r:
+              result = json.loads(r.read())
+
+          if result.get('ok'):
+              print('Sukces!')
+          else:
+              print('Blad:', result)
+              exit(1)
+          PYEOF
