@@ -108,13 +108,10 @@
   .head{padding:24px 0 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .head-l{min-width:0;flex:1}
   .head h1{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.06;display:flex;align-items:center;gap:11px}
-  .head .badge{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
-  .head .badge svg{width:17px;height:17px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .head .badge{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;opacity:.85}
+  .head .badge svg{width:13px;height:13px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .head .sub{margin-top:6px;font-size:14px;color:var(--ink-2);letter-spacing:-.01em}
-  /* NZXT section label: — LABEL */
-  .nzxt-label{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-  .nzxt-label::before{content:'';display:block;width:18px;height:2px;background:#7c3aed;flex-shrink:0}
-  .nzxt-label span{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7c3aed}
+
   .head-menu{display:flex;gap:2px;flex-shrink:0;margin-top:2px}
   .head-menu .ico{width:34px;height:34px}.head-menu .ico svg{width:19px;height:19px}
 
@@ -422,7 +419,6 @@
 
 <div class="wrap">
   <div class="head">
-    <div class="nzxt-label"><span id="nzxtSectionLabel">Notatki</span></div>
     <div class="head-l">
       <h1><span class="badge" id="headBadge"></span><span id="headTitle">Praca</span></h1>
       <div class="sub" id="headSub"></div>
@@ -740,7 +736,6 @@ function renderHead(){
     $("#headTitle").textContent="Wszystkie";
     const total=notes.filter(n=>!n.done).length;
     $("#headSub").textContent=total?`${total} do zrobienia • wszystkie foldery`:"Wszystkie foldery";
-    const lblAll=document.querySelector(".nzxt-label span");if(lblAll)lblAll.textContent="Wszystkie notatki";
     $("#addSubBtn").style.display="none";
     $("#editFolderBtn").style.display="none";
     return;
