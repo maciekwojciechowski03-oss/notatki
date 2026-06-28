@@ -4,17 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Akcja (add / remove)'
+        description: 'Akcja'
         required: true
         type: choice
         options:
           - add
           - remove
+          - rename
       folder_id:
-        description: 'ID folderu (np. praca_oj)'
+        description: 'ID folderu (np. praca)'
         required: true
       folder_name:
-        description: 'Nazwa folderu (np. Praca O&J)'
+        description: 'Nazwa folderu (dla add)'
+        required: false
+      new_name:
+        description: 'Nowa nazwa (dla rename)'
         required: false
       folder_icon:
         description: 'Ikona (praca/zakupy/inne/dom/auto/narzedzia/gwiazda/serce/bateria/flaga)'
@@ -25,7 +29,7 @@ on:
         required: false
         default: 'blue'
       kv_namespace_id:
-        description: 'KV Namespace ID (z Cloudflare)'
+        description: 'KV Namespace ID'
         required: true
 
 jobs:
@@ -42,6 +46,7 @@ jobs:
           ACTION: ${{ inputs.action }}
           FOLDER_ID: ${{ inputs.folder_id }}
           FOLDER_NAME: ${{ inputs.folder_name }}
+          NEW_NAME: ${{ inputs.new_name }}
           FOLDER_ICON: ${{ inputs.folder_icon }}
           FOLDER_COLOR: ${{ inputs.folder_color }}
         run: python3 scripts/manage_folders.py
