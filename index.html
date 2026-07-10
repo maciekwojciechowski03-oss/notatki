@@ -197,6 +197,48 @@
     display:flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:-.01em;
     box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),box-shadow .25s}
   .fab:hover{box-shadow:0 12px 30px rgba(124,58,237,.5)}
+
+  /* ── rozwijany FAB ── */
+  .fab-group{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom)+22px);z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+  .fab-main{height:48px;padding:0 22px;border:none;border-radius:24px;background:#7c3aed;color:#fff;display:flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:-.01em;cursor:pointer;box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),background .15s}
+  .fab-main:hover{background:#6d28d9}
+  .fab-main svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring)}
+  .fab-group.open .fab-main svg{transform:rotate(45deg)}
+  .fab-sub{height:40px;padding:0 16px;border:none;border-radius:20px;background:#fff;color:#1a1a1a;display:flex;align-items:center;gap:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid rgba(0,0,0,.08);opacity:0;transform:translateY(8px) scale(.95);pointer-events:none;transition:opacity .2s var(--ease),transform .25s var(--spring)}
+  .fab-sub svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .fab-sub.doc-btn{color:#7c3aed}
+  .fab-group.open .fab-sub{opacity:1;transform:none;pointer-events:auto}
+  .fab-group.open .fab-sub:nth-child(1){transition-delay:.05s}
+  .fab-group.open .fab-sub:nth-child(2){transition-delay:.02s}
+
+  /* ── edytor dokumentów ── */
+  .doc-editor{position:fixed;inset:0;z-index:180;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .42s var(--spring)}
+  .doc-editor.show{transform:none}
+  .doc-toolbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top)+10px) 16px 10px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+  .doc-back{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#7c3aed;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;font-family:inherit;flex-shrink:0}
+  .doc-back:hover{background:rgba(124,58,237,.08)}
+  .doc-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .doc-folder-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;background:var(--chip-bg);border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-family:inherit;color:var(--ink-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .doc-folder-btn .fi-dot-sm{width:16px;height:16px;border-radius:4px;display:grid;place-items:center;flex-shrink:0}
+  .doc-folder-btn .fi-dot-sm svg{width:9px;height:9px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .doc-save-btn{height:34px;padding:0 16px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+  .doc-save-btn:hover{background:#6d28d9}
+  .doc-title-inp{width:100%;border:none;outline:none;background:transparent;font-family:inherit;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;padding:20px 20px 8px;flex-shrink:0;resize:none}
+  .doc-title-inp::placeholder{color:var(--ink-3)}
+  .doc-divider{height:1px;background:var(--line-2);margin:0 20px;flex-shrink:0}
+  .doc-body-inp{flex:1;width:100%;border:none;outline:none;background:transparent;font-family:inherit;font-size:16px;line-height:1.75;color:var(--ink);padding:16px 20px 60px;resize:none;overflow-y:auto}
+  .doc-body-inp::placeholder{color:var(--ink-3)}
+  .doc-wordcount{position:absolute;bottom:16px;right:20px;font-size:11px;color:var(--ink-3);pointer-events:none}
+
+  /* ── karta dokumentu ── */
+  .card.doc-type{align-items:flex-start;padding:13px 13px 11px}
+  .doc-card-icon{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;background:rgba(124,58,237,.12)}
+  .doc-card-icon svg{width:18px;height:18px;stroke:#7c3aed;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .doc-card-body{flex:1;min-width:0}
+  .doc-card-title{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .doc-card-preview{font-size:12.5px;color:var(--ink-2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px}
+  .doc-card-meta{font-size:11px;color:var(--ink-3)}
+  .card.doc-type .c-acts{flex-direction:column;gap:2px;align-self:flex-start}
   .fab:active{transform:scale(.93)}
   .fab svg{width:22px;height:22px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
 
@@ -442,7 +484,38 @@
 
 <div class="wrap"><div class="list" id="list"></div></div>
 
-<button class="fab" id="fab"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Notatka</button>
+<div class="fab-group" id="fabGroup">
+  <button class="fab-sub doc-btn" id="fabDoc" onclick="openDocEditor()">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+    Dokument
+  </button>
+  <button class="fab-sub" id="fabNote" onclick="openNoteSheet()">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    Notatka
+  </button>
+  <button class="fab-main" id="fab" onclick="toggleFab()">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    Dodaj
+  </button>
+</div>
+
+<!-- EDYTOR DOKUMENTÓW -->
+<div class="doc-editor" id="docEditor">
+  <div class="doc-toolbar">
+    <button class="doc-back" onclick="closeDocEditor()">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Zamknij
+    </button>
+    <button class="doc-folder-btn" id="docFolderBtn" onclick="toggleDocFolderDrop()">
+      <span class="fi-dot-sm" id="docFolderDot"></span>
+      <span id="docFolderName">Wybierz folder</span>
+    </button>
+    <button class="doc-save-btn" onclick="saveDoc()">Zapisz</button>
+  </div>
+  <textarea class="doc-title-inp" id="docTitleInp" placeholder="Tytuł dokumentu…" rows="1"></textarea>
+  <div class="doc-divider"></div>
+  <textarea class="doc-body-inp" id="docBodyInp" placeholder="Zacznij pisać…"></textarea>
+</div>
 
 <!-- MODALE -->
 <div class="scrim" id="scrim"></div>
@@ -877,6 +950,27 @@ function renderList(){
 }
 
 function cardHTML(n,idx){
+  // Karta dokumentu
+  if(n.type==="doc"){
+    const f=F(n.folder);
+    const title=n.title||"Dokument bez tytułu";
+    const preview=n.text?(n.text.length>120?n.text.slice(0,120)+"…":n.text):"";
+    const allView=(activeFolder===ALL_ID||!!searchQuery);
+    return `<div class="card doc-type${n.done?" done":""}${n.star?" star-on":""}" data-id="${n.id}">
+      <div class="doc-card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+      <div class="doc-card-body">
+        <div class="doc-card-title">${esc(title)}</div>
+        ${preview?`<div class="doc-card-preview">${esc(preview)}</div>`:""}
+        <div class="doc-card-meta">${fmtDate(n.ts)} · ${fmtTime(n.ts)}${allView&&f?" · "+esc(f.name):""}</div>
+      </div>
+      <div class="c-acts">
+        <button class="mini star${n.star?" starred":""}" onclick="toggleStar('${n.id}')" aria-label="Priorytet"><svg viewBox="0 0 24 24">${ICO.star}</svg></button>
+        <button class="mini edit" onclick="openDocEditor('${n.id}')" aria-label="Edytuj dokument"><svg viewBox="0 0 24 24">${ICO.edit}</svg></button>
+        <button class="mini danger" onclick="del('${n.id}')" aria-label="Usuń"><svg viewBox="0 0 24 24">${ICO.del}</svg></button>
+      </div>
+    </div>`;
+  }
+  // Karta notatki
   const f=F(n.folder);
   const subName=n.subfolder?((f&&f.subs.find(s=>s.id===n.subfolder))||{}).name:null;
   const allView=(activeFolder===ALL_ID||!!searchQuery);
@@ -1237,7 +1331,7 @@ function closeSheets(){$("#scrim").classList.remove("show");document.querySelect
 $("#scrim").onclick=closeSheets;
 
 // ---------- TOP BAR ----------
-$("#fab").onclick=openNoteSheet;
+// fab-group - toggleFab zamiast openNoteSheet
 $("#refresh").onclick=function(){this.classList.remove("spin");void this.offsetWidth;this.classList.add("spin");load();};
 $("#copy").onclick=()=>{
   let scope;
@@ -1325,6 +1419,112 @@ function goToNote(el){
     }
   },120);
 }
+
+// ────────────────────────────────────────
+// FAB TOGGLE
+// ────────────────────────────────────────
+let _fabOpen=false;
+function toggleFab(){
+  _fabOpen=!_fabOpen;
+  $("#fabGroup").classList.toggle("open",_fabOpen);
+}
+document.addEventListener("click",e=>{
+  if(_fabOpen&&!e.target.closest("#fabGroup")){_fabOpen=false;$("#fabGroup").classList.remove("open");}
+});
+
+// ────────────────────────────────────────
+// EDYTOR DOKUMENTÓW
+// ────────────────────────────────────────
+let docEditorId=null,docEditorFolder=null,docEditorSub=null,_docFolderOpen=false;
+
+function openDocEditor(noteId){
+  _fabOpen=false;$("#fabGroup").classList.remove("open");
+  docEditorId=noteId||null;
+  const n=noteId?notes.find(x=>x.id===noteId):null;
+  $("#docTitleInp").value=n?(n.title||""):"";
+  $("#docBodyInp").value=n?(n.text||""):"";
+  // folder
+  docEditorFolder=n?n.folder:(activeFolder!==ALL_ID?activeFolder:folders[0]?.id||null);
+  docEditorSub=n?(n.subfolder||null):null;
+  updateDocFolderUI();
+  $("#docEditor").classList.add("show");
+  document.body.style.overflow="hidden";
+  setTimeout(()=>(n?$("#docBodyInp"):$("#docTitleInp")).focus(),420);
+}
+
+function closeDocEditor(){
+  $("#docEditor").classList.remove("show");
+  document.body.style.overflow="";
+  docEditorId=null;
+}
+
+function updateDocFolderUI(){
+  const f=F(docEditorFolder);
+  const dot=$("#docFolderDot");
+  const nm=$("#docFolderName");
+  if(f){
+    const stroke=dotStroke(f.grad);
+    if(f.grad&&f.grad.startsWith("#")){dot.style.cssText="background:"+f.grad+";--dot-stroke:"+stroke;}
+    else{dot.className="fi-dot-sm g-"+f.grad;dot.style.cssText="--dot-stroke:"+stroke;}
+    dot.innerHTML=`<svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg>`;
+    nm.textContent=f.name;
+  }else{
+    dot.className="fi-dot-sm";dot.style.cssText="background:var(--chip-bg)";
+    dot.innerHTML=`<svg viewBox="0 0 24 24" style="stroke:var(--ink-3)"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`;
+    nm.textContent="Wybierz folder";
+  }
+}
+
+function toggleDocFolderDrop(){
+  // Prosta lista folderów jako popover
+  const existing=document.getElementById("docFolderPopover");
+  if(existing){existing.remove();_docFolderOpen=false;return;}
+  _docFolderOpen=true;
+  const pop=document.createElement("div");
+  pop.id="docFolderPopover";
+  pop.style.cssText="position:fixed;z-index:300;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.15);min-width:200px;overflow:hidden;";
+  // pozycja pod przyciskiem
+  const btn=$("#docFolderBtn");const r=btn.getBoundingClientRect();
+  pop.style.left=r.left+"px";pop.style.top=(r.bottom+6)+"px";
+  folders.forEach(f=>{
+    const item=document.createElement("div");
+    item.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line-2);";
+    const stroke=dotStroke(f.grad);
+    item.innerHTML=`<span style="width:22px;height:22px;border-radius:6px;display:grid;place-items:center;flex-shrink:0;${f.grad.startsWith('#')?'background:'+f.grad:''}--dot-stroke:${stroke}" class="${f.grad.startsWith('#')?'':'g-'+f.grad}"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">${iconSvg(f.icon)}</svg></span><span style="font-size:13px;font-weight:600;color:var(--ink)">${esc(f.name)}</span>`;
+    item.onclick=()=>{docEditorFolder=f.id;docEditorSub=null;updateDocFolderUI();pop.remove();_docFolderOpen=false;};
+    pop.appendChild(item);
+  });
+  document.body.appendChild(pop);
+  setTimeout(()=>document.addEventListener("click",function h(e){if(!e.target.closest("#docFolderPopover")&&!e.target.closest("#docFolderBtn")){pop.remove();document.removeEventListener("click",h);_docFolderOpen=false;}},{once:false}),10);
+}
+
+async function saveDoc(){
+  const title=$("#docTitleInp").value.trim();
+  const text=$("#docBodyInp").value.trim();
+  if(!docEditorFolder){toast("Wybierz folder");return;}
+  try{
+    if(docEditorId){
+      // Aktualizuj
+      await fetch(API+"/edit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:docEditorId,text,title})});
+      const n=notes.find(x=>x.id===docEditorId);
+      if(n){n.text=text;n.title=title;}
+      toast("Dokument zapisany");
+    }else{
+      // Utwórz nowy
+      const r=await fetch(API+"/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,title,folder:docEditorFolder,subfolder:docEditorSub,type:"doc"})});
+      const d=await r.json();
+      if(d.note)notes.push(d.note);
+      else notes.push({id:"tmp_"+Date.now(),text,title,folder:docEditorFolder,subfolder:docEditorSub,done:false,star:false,type:"doc",ts:Date.now()});
+      toast("Dokument dodany");
+    }
+    closeDocEditor();renderAll();
+  }catch(e){toast("Błąd zapisu");}
+}
+
+// auto-resize tytułu dokumentu
+$("#docTitleInp").addEventListener("input",function(){
+  this.style.height="auto";this.style.height=this.scrollHeight+"px";
+});
 
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!editing)load();});
 load();
