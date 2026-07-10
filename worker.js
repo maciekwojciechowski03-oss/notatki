@@ -77,20 +77,21 @@ export default {
       }
 
       if (path === "/edit" && request.method === "POST") {
-        const { id, text } = await request.json();
+        const { id, text, title } = await request.json();
         const notes = await getNotes(env);
         const n = notes.find((x) => x.id === id);
         if (!n) return json({ ok: false, error: "Nie znaleziono" }, 404);
-        n.text = String(text).trim();
+        if (text !== undefined) n.text = String(text).trim();
+        if (title !== undefined) n.title = title ? String(title).trim() : null;
         await putNotes(env, notes);
         return json({ ok: true });
       }
 
       if (path === "/create" && request.method === "POST") {
-        const { text, folder, subfolder } = await request.json();
-        if (!text || !folder) return json({ ok: false, error: "Brak text/folder" }, 400);
+        const { text, folder, subfolder, type, title } = await request.json();
+        if (!folder) return json({ ok: false, error: "Brak folder" }, 400);
         const notes = await getNotes(env);
-        const note = { id: crypto.randomUUID(), text: String(text).trim(), ts: Date.now(), folder, subfolder: subfolder || null, done: false, star: false };
+        const note = { id: crypto.randomUUID(), text: String(text||"").trim(), ts: Date.now(), folder, subfolder: subfolder || null, done: false, star: false, type: type||"note", title: title?String(title).trim():null };
         notes.push(note);
         await putNotes(env, notes);
         return json({ ok: true, note });
