@@ -207,24 +207,44 @@
   .fab-group.open .fab-subs .fab-sub:nth-child(1){transition-delay:.04s}
   .fab-group.open .fab-subs .fab-sub:nth-child(2){transition-delay:.01s}
 
-  /* ── edytor dokumentów ── */
-  .doc-editor{position:fixed;inset:0;z-index:180;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .42s var(--spring);pointer-events:none}
+  /* ── edytor dokumentów (Word-style) ── */
+  .doc-editor{position:fixed;inset:0;z-index:180;background:#e8e8e8;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .42s var(--spring);pointer-events:none}
   .doc-editor.show{transform:none;pointer-events:auto}
-  .doc-toolbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
-  .doc-back{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#7c3aed;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;font-family:inherit;flex-shrink:0}
-  .doc-back:hover{background:rgba(124,58,237,.08)}
-  .doc-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-  .doc-folder-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;background:var(--chip-bg);border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-family:inherit;color:var(--ink-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .doc-folder-btn .fi-dot-sm{width:16px;height:16px;border-radius:4px;display:grid;place-items:center;flex-shrink:0}
-  .doc-folder-btn .fi-dot-sm svg{width:9px;height:9px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-  .doc-save-btn{height:34px;padding:0 16px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
-  .doc-save-btn:hover{background:#6d28d9}
-  .doc-title-inp{width:100%;border:none;outline:none;background:transparent;font-family:inherit;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;padding:20px 20px 8px;flex-shrink:0;resize:none}
-  .doc-title-inp::placeholder{color:var(--ink-3)}
-  .doc-divider{height:1px;background:var(--line-2);margin:0 20px;flex-shrink:0}
-  .doc-body-inp{flex:1;width:100%;border:none;outline:none;background:transparent;font-family:inherit;font-size:16px;line-height:1.75;color:var(--ink);padding:16px 20px 60px;resize:none;overflow-y:auto}
-  .doc-body-inp::placeholder{color:var(--ink-3)}
-  .doc-wordcount{position:absolute;bottom:16px;right:20px;font-size:11px;color:var(--ink-3);pointer-events:none}
+  /* pasek górny */
+  .doc-topbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;background:#2b2b6b;flex-shrink:0}
+  .doc-back{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);background:none;border:none;cursor:pointer;padding:5px 8px;border-radius:6px;font-family:inherit;flex-shrink:0}
+  .doc-back:hover{background:rgba(255,255,255,.12);color:#fff}
+  .doc-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .doc-title-bar{flex:1;font-size:13px;font-weight:600;color:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .doc-folder-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;background:rgba(255,255,255,.15);border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit;color:#fff;flex-shrink:0}
+  .doc-folder-btn .fi-dot-sm{width:14px;height:14px;border-radius:3px;display:grid;place-items:center;flex-shrink:0}
+  .doc-folder-btn .fi-dot-sm svg{width:8px;height:8px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .doc-save-btn{height:30px;padding:0 14px;background:#fff;color:#2b2b6b;border:none;border-radius:6px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;letter-spacing:.02em}
+  .doc-save-btn:hover{background:#f0f0ff}
+  /* pasek formatowania */
+  .doc-formatbar{display:flex;align-items:center;gap:1px;padding:4px 8px;background:#fff;border-bottom:1px solid #d0d0d0;flex-shrink:0;flex-wrap:wrap}
+  .doc-fmt-sep{width:1px;height:20px;background:#d0d0d0;margin:0 4px;flex-shrink:0}
+  .doc-fmt-btn{width:30px;height:28px;border:none;background:transparent;cursor:pointer;border-radius:4px;display:grid;place-items:center;color:#333;font-size:13px;font-weight:700;font-family:inherit;transition:background .1s;flex-shrink:0}
+  .doc-fmt-btn:hover{background:#e8e8f0}
+  .doc-fmt-btn.active{background:#c8c8f0;color:#2b2b6b}
+  .doc-fmt-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .doc-fmt-select{height:28px;border:1px solid #d0d0d0;border-radius:4px;font-size:12px;font-family:inherit;color:#333;background:#fff;padding:0 6px;cursor:pointer;outline:none}
+  .doc-wordcount-bar{font-size:11px;color:#888;margin-left:auto;white-space:nowrap;padding:0 8px}
+  /* obszar dokumentu */
+  .doc-scroll{flex:1;overflow-y:auto;padding:24px 16px 60px;background:#e8e8e8}
+  .doc-paper{background:#fff;max-width:760px;margin:0 auto;min-height:calc(100vh - 200px);box-shadow:0 2px 8px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.08);padding:60px 72px;position:relative}
+  @media(max-width:600px){.doc-paper{padding:32px 24px}}
+  .doc-title-field{font-size:26px;font-weight:800;color:#1a1a1a;line-height:1.2;margin-bottom:16px;border:none;outline:none;width:100%;font-family:inherit;min-height:40px}
+  .doc-title-field:empty::before{content:attr(data-placeholder);color:#bbb;pointer-events:none;font-weight:400}
+  .doc-body-field{font-size:14px;line-height:1.8;color:#1a1a1a;outline:none;min-height:400px;width:100%;font-family:Georgia,serif}
+  .doc-body-field:empty::before{content:attr(data-placeholder);color:#bbb;pointer-events:none}
+  .doc-body-field h1{font-size:22px;font-weight:700;margin:20px 0 8px;line-height:1.3}
+  .doc-body-field h2{font-size:18px;font-weight:700;margin:16px 0 6px;line-height:1.3}
+  .doc-body-field h3{font-size:15px;font-weight:700;margin:12px 0 4px;line-height:1.3}
+  .doc-body-field p{margin:0 0 8px}
+  .doc-body-field ul,.doc-body-field ol{margin:6px 0 6px 24px;padding:0}
+  .doc-body-field li{margin-bottom:3px}
+  .doc-body-field blockquote{border-left:3px solid #2b2b6b;margin:12px 0;padding:8px 16px;color:#555;font-style:italic}
 
   /* ── karta dokumentu ── */
   .card.doc-type{align-items:flex-start;padding:13px 13px 11px}
@@ -497,20 +517,50 @@
 
 <!-- EDYTOR DOKUMENTÓW -->
 <div class="doc-editor" id="docEditor">
-  <div class="doc-toolbar">
+  <!-- Górny pasek -->
+  <div class="doc-topbar">
     <button class="doc-back" onclick="closeDocEditor()">
-      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Zamknij
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Wróć
     </button>
+    <div class="doc-title-bar" id="docTitleBar">Nowy dokument</div>
     <button class="doc-folder-btn" id="docFolderBtn" onclick="toggleDocFolderDrop()">
       <span class="fi-dot-sm" id="docFolderDot"></span>
-      <span id="docFolderName">Wybierz folder</span>
+      <span id="docFolderName">Folder</span>
     </button>
-    <button class="doc-save-btn" onclick="saveDoc()">Zapisz</button>
+    <button class="doc-save-btn" onclick="saveDoc()">💾 Zapisz</button>
   </div>
-  <textarea class="doc-title-inp" id="docTitleInp" placeholder="Tytuł dokumentu…" rows="1"></textarea>
-  <div class="doc-divider"></div>
-  <textarea class="doc-body-inp" id="docBodyInp" placeholder="Zacznij pisać…"></textarea>
+  <!-- Pasek formatowania -->
+  <div class="doc-formatbar">
+    <select class="doc-fmt-select" id="docStyleSel" onchange="applyStyle(this.value)" title="Styl akapitu">
+      <option value="p">Normalny</option>
+      <option value="h1">Nagłówek 1</option>
+      <option value="h2">Nagłówek 2</option>
+      <option value="h3">Nagłówek 3</option>
+      <option value="blockquote">Cytat</option>
+    </select>
+    <div class="doc-fmt-sep"></div>
+    <button class="doc-fmt-btn" onclick="fmt('bold')" title="Pogrubienie (Ctrl+B)"><b>B</b></button>
+    <button class="doc-fmt-btn" onclick="fmt('italic')" title="Kursywa (Ctrl+I)"><i>I</i></button>
+    <button class="doc-fmt-btn" onclick="fmt('underline')" title="Podkreślenie (Ctrl+U)"><u>U</u></button>
+    <button class="doc-fmt-btn" onclick="fmt('strikeThrough')" title="Przekreślenie"><s>S</s></button>
+    <div class="doc-fmt-sep"></div>
+    <button class="doc-fmt-btn" onclick="fmt('insertUnorderedList')" title="Lista punktowana"><svg viewBox="0 0 24 24"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg></button>
+    <button class="doc-fmt-btn" onclick="fmt('insertOrderedList')" title="Lista numerowana"><svg viewBox="0 0 24 24"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2M4 14l2 4H4" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    <div class="doc-fmt-sep"></div>
+    <button class="doc-fmt-btn" onclick="fmt('justifyLeft')" title="Wyrównaj do lewej"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>
+    <button class="doc-fmt-btn" onclick="fmt('justifyCenter')" title="Wyśrodkuj"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+    <button class="doc-fmt-btn" onclick="fmt('justifyRight')" title="Wyrównaj do prawej"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="doc-fmt-sep"></div>
+    <button class="doc-fmt-btn" onclick="fmt('removeFormat')" title="Usuń formatowanie" style="font-size:11px;font-weight:700;letter-spacing:-.03em">Aa</button>
+    <span class="doc-wordcount-bar" id="docWordCount">0 słów</span>
+  </div>
+  <!-- Obszar dokumentu -->
+  <div class="doc-scroll">
+    <div class="doc-paper">
+      <div class="doc-title-field" id="docTitleField" contenteditable="true" data-placeholder="Tytuł dokumentu…" spellcheck="true"></div>
+      <div class="doc-body-field" id="docBodyField" contenteditable="true" data-placeholder="Zacznij pisać…" spellcheck="true"></div>
+    </div>
+  </div>
 </div>
 
 <!-- MODALE -->
@@ -950,9 +1000,10 @@ function cardHTML(n,idx){
   if(n.type==="doc"){
     const f=F(n.folder);
     const title=n.title||"Dokument bez tytułu";
-    const preview=n.text?(n.text.length>120?n.text.slice(0,120)+"…":n.text):"";
+    const rawText=(n.text||"").replace(/<[^>]*>/g,"").trim();
+    const preview=rawText.length>120?rawText.slice(0,120)+"…":rawText;
     const allView=(activeFolder===ALL_ID||!!searchQuery);
-    return `<div class="card doc-type${n.done?" done":""}${n.star?" star-on":""}" data-id="${n.id}">
+    return `<div class="card doc-type${n.done?" done":""}${n.star?" star-on":""}" data-id="${n.id}" ondblclick="openDocEditor('${n.id}')" ontouchend="docDoubleTap(event,'${n.id}')">
       <div class="doc-card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
       <div class="doc-card-body">
         <div class="doc-card-title">${esc(title)}</div>
@@ -1429,23 +1480,45 @@ document.addEventListener("click",e=>{
 });
 
 // ────────────────────────────────────────
-// EDYTOR DOKUMENTÓW
+// EDYTOR DOKUMENTÓW (Word-style)
 // ────────────────────────────────────────
 let docEditorId=null,docEditorFolder=null,docEditorSub=null,_docFolderOpen=false;
+let _docLastTap=0,_docLastTapId=null;
+
+// Double-tap na mobile
+function docDoubleTap(e,noteId){
+  const now=Date.now();
+  if(now-_docLastTap<400&&_docLastTapId===noteId){
+    e.preventDefault();openDocEditor(noteId);
+    _docLastTap=0;_docLastTapId=null;
+  }else{_docLastTap=now;_docLastTapId=noteId;}
+}
 
 function openDocEditor(noteId){
   _fabOpen=false;$("#fabGroup").classList.remove("open");
   docEditorId=noteId||null;
   const n=noteId?notes.find(x=>x.id===noteId):null;
-  $("#docTitleInp").value=n?(n.title||""):"";
-  $("#docBodyInp").value=n?(n.text||""):"";
-  // folder
+  // Tytuł
+  const titleEl=$("#docTitleField");
+  titleEl.innerText=n?(n.title||""):"";
+  $("#docTitleBar").textContent=n?(n.title||"Nowy dokument"):"Nowy dokument";
+  // Treść (HTML lub plain text)
+  const bodyEl=$("#docBodyField");
+  const rawText=n?n.text:"";
+  if(rawText&&rawText.trim().startsWith("<")){
+    bodyEl.innerHTML=rawText;
+  }else{
+    bodyEl.innerHTML=rawText?`<p>${rawText.replace(/
+/g,"</p><p>")}</p>`:"";
+  }
+  // Folder
   docEditorFolder=n?n.folder:(activeFolder!==ALL_ID?activeFolder:folders[0]?.id||null);
   docEditorSub=n?(n.subfolder||null):null;
   updateDocFolderUI();
+  updateWordCount();
   $("#docEditor").classList.add("show");
   document.body.style.overflow="hidden";
-  setTimeout(()=>(n?$("#docBodyInp"):$("#docTitleInp")).focus(),420);
+  setTimeout(()=>(n?$("#docBodyField"):$("#docTitleField")).focus(),420);
 }
 
 function closeDocEditor(){
@@ -1456,8 +1529,7 @@ function closeDocEditor(){
 
 function updateDocFolderUI(){
   const f=F(docEditorFolder);
-  const dot=$("#docFolderDot");
-  const nm=$("#docFolderName");
+  const dot=$("#docFolderDot"),nm=$("#docFolderName");
   if(f){
     const stroke=dotStroke(f.grad);
     if(f.grad&&f.grad.startsWith("#")){dot.style.cssText="background:"+f.grad+";--dot-stroke:"+stroke;}
@@ -1465,48 +1537,90 @@ function updateDocFolderUI(){
     dot.innerHTML=`<svg viewBox="0 0 24 24">${iconSvg(f.icon)}</svg>`;
     nm.textContent=f.name;
   }else{
-    dot.className="fi-dot-sm";dot.style.cssText="background:var(--chip-bg)";
-    dot.innerHTML=`<svg viewBox="0 0 24 24" style="stroke:var(--ink-3)"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`;
-    nm.textContent="Wybierz folder";
+    dot.className="fi-dot-sm";dot.style.cssText="background:rgba(255,255,255,.2)";
+    dot.innerHTML=`<svg viewBox="0 0 24 24" style="stroke:#fff"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`;
+    nm.textContent="Folder";
   }
 }
 
 function toggleDocFolderDrop(){
-  // Prosta lista folderów jako popover
   const existing=document.getElementById("docFolderPopover");
-  if(existing){existing.remove();_docFolderOpen=false;return;}
-  _docFolderOpen=true;
+  if(existing){existing.remove();return;}
   const pop=document.createElement("div");
   pop.id="docFolderPopover";
-  pop.style.cssText="position:fixed;z-index:300;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.15);min-width:200px;overflow:hidden;";
-  // pozycja pod przyciskiem
+  pop.style.cssText="position:fixed;z-index:300;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.2);min-width:180px;overflow:hidden;";
   const btn=$("#docFolderBtn");const r=btn.getBoundingClientRect();
   pop.style.left=r.left+"px";pop.style.top=(r.bottom+6)+"px";
   folders.forEach(f=>{
     const item=document.createElement("div");
-    item.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line-2);";
+    item.style.cssText="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;font-weight:600;color:#1a1a1a;";
     const stroke=dotStroke(f.grad);
-    item.innerHTML=`<span style="width:22px;height:22px;border-radius:6px;display:grid;place-items:center;flex-shrink:0;${f.grad.startsWith('#')?'background:'+f.grad:''}--dot-stroke:${stroke}" class="${f.grad.startsWith('#')?'':'g-'+f.grad}"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">${iconSvg(f.icon)}</svg></span><span style="font-size:13px;font-weight:600;color:var(--ink)">${esc(f.name)}</span>`;
-    item.onclick=()=>{docEditorFolder=f.id;docEditorSub=null;updateDocFolderUI();pop.remove();_docFolderOpen=false;};
+    item.innerHTML=`<span style="width:20px;height:20px;border-radius:5px;display:grid;place-items:center;flex-shrink:0;--dot-stroke:${stroke}" class="g-${f.grad}"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--dot-stroke,#fff);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">${iconSvg(f.icon)}</svg></span>${esc(f.name)}`;
+    item.onmouseover=()=>item.style.background="#f5f5ff";
+    item.onmouseout=()=>item.style.background="";
+    item.onclick=()=>{docEditorFolder=f.id;docEditorSub=null;updateDocFolderUI();pop.remove();};
     pop.appendChild(item);
   });
   document.body.appendChild(pop);
-  setTimeout(()=>document.addEventListener("click",function h(e){if(!e.target.closest("#docFolderPopover")&&!e.target.closest("#docFolderBtn")){pop.remove();document.removeEventListener("click",h);_docFolderOpen=false;}},{once:false}),10);
+  setTimeout(()=>document.addEventListener("click",function h(e){
+    if(!e.target.closest("#docFolderPopover")&&!e.target.closest("#docFolderBtn")){pop.remove();document.removeEventListener("click",h);}
+  }),50);
 }
 
+// Formatowanie
+function fmt(cmd,val){
+  $("#docBodyField").focus();
+  document.execCommand(cmd,false,val||null);
+  updateToolbarState();
+}
+function applyStyle(tag){
+  $("#docBodyField").focus();
+  document.execCommand("formatBlock",false,tag);
+  updateToolbarState();
+}
+function updateToolbarState(){
+  ["bold","italic","underline","strikeThrough"].forEach(cmd=>{
+    const btn=document.querySelector(`.doc-fmt-btn[onclick="fmt('${cmd}')"]`);
+    if(btn)btn.classList.toggle("active",document.queryCommandState(cmd));
+  });
+}
+function updateWordCount(){
+  const text=($("#docBodyField")?.innerText||"").trim();
+  const words=text?text.split(/\s+/).filter(w=>w.length>0).length:0;
+  const el=$("#docWordCount");
+  if(el)el.textContent=words+" "+(words===1?"słowo":words<5?"słowa":"słów");
+}
+
+// Aktualizuj tytuł w pasku przy edycji
+$("#docTitleField").addEventListener("input",function(){
+  const t=this.innerText.trim();
+  $("#docTitleBar").textContent=t||"Nowy dokument";
+});
+$("#docBodyField").addEventListener("input",()=>{updateWordCount();updateToolbarState();});
+$("#docBodyField").addEventListener("keyup",updateToolbarState);
+$("#docBodyField").addEventListener("mouseup",updateToolbarState);
+
+// Skróty klawiszowe
+$("#docBodyField").addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)){
+    if(e.key==="b"){e.preventDefault();fmt("bold");}
+    if(e.key==="i"){e.preventDefault();fmt("italic");}
+    if(e.key==="u"){e.preventDefault();fmt("underline");}
+    if(e.key==="s"){e.preventDefault();saveDoc();}
+  }
+});
+
 async function saveDoc(){
-  const title=$("#docTitleInp").value.trim();
-  const text=$("#docBodyInp").value.trim();
+  const title=($("#docTitleField").innerText||"").trim();
+  const text=$("#docBodyField").innerHTML.trim();
   if(!docEditorFolder){toast("Wybierz folder");return;}
   try{
     if(docEditorId){
-      // Aktualizuj
       await fetch(API+"/edit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:docEditorId,text,title})});
       const n=notes.find(x=>x.id===docEditorId);
       if(n){n.text=text;n.title=title;}
       toast("Dokument zapisany");
     }else{
-      // Utwórz nowy
       const r=await fetch(API+"/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,title,folder:docEditorFolder,subfolder:docEditorSub,type:"doc"})});
       const d=await r.json();
       if(d.note)notes.push(d.note);
@@ -1516,11 +1630,6 @@ async function saveDoc(){
     closeDocEditor();renderAll();
   }catch(e){toast("Błąd zapisu");}
 }
-
-// auto-resize tytułu dokumentu
-$("#docTitleInp").addEventListener("input",function(){
-  this.style.height="auto";this.style.height=this.scrollHeight+"px";
-});
 
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!editing)load();});
 load();
