@@ -1508,8 +1508,7 @@ function openDocEditor(noteId){
   if(rawText&&rawText.trim().startsWith("<")){
     bodyEl.innerHTML=rawText;
   }else{
-    bodyEl.innerHTML=rawText?`<p>${rawText.replace(/
-/g,"</p><p>")}</p>`:"";
+    bodyEl.innerHTML=rawText?`<p>${rawText.replace(/\n/g,"</p><p>")}</p>`:"";
   }
   // Folder
   docEditorFolder=n?n.folder:(activeFolder!==ALL_ID?activeFolder:folders[0]?.id||null);
