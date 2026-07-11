@@ -190,17 +190,11 @@
   @keyframes rot{to{transform:rotate(360deg)}}
 
   /* ---------- FAB (dodaj notatkę) ---------- */
-  .fab{
-    position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom) + 22px);z-index:60;
-    height:56px;padding:0 22px 0 18px;border:none;border-radius:30px;cursor:pointer;
-    background:#7c3aed;color:#fff;
-    display:flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:-.01em;
-    box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),box-shadow .25s}
-  .fab:hover{box-shadow:0 12px 30px rgba(124,58,237,.5)}
+
 
   /* ── rozwijany FAB ── */
   .fab-group{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom)+22px);z-index:60}
-  .fab-main{height:48px;padding:0 22px;border:none;border-radius:24px;background:#7c3aed;color:#fff;display:flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:-.01em;cursor:pointer;box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),background .15s;position:relative;z-index:1}
+  .fab-main{height:48px;padding:0 22px;border:none;border-radius:24px;background:#7c3aed;color:#fff;display:flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:-.01em;cursor:pointer;box-shadow:0 8px 24px rgba(124,58,237,.4);transition:transform .2s var(--spring),background .15s}
   .fab-main:hover{background:#6d28d9}
   .fab-main svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring)}
   .fab-group.open .fab-main svg{transform:rotate(45deg)}
@@ -214,8 +208,8 @@
   .fab-group.open .fab-subs .fab-sub:nth-child(2){transition-delay:.01s}
 
   /* ── edytor dokumentów ── */
-  .doc-editor{position:fixed;inset:0;z-index:180;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .42s var(--spring)}
-  .doc-editor.show{transform:none}
+  .doc-editor{position:fixed;inset:0;z-index:180;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .42s var(--spring);pointer-events:none}
+  .doc-editor.show{transform:none;pointer-events:auto}
   .doc-toolbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top)+10px) 16px 10px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
   .doc-back{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#7c3aed;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;font-family:inherit;flex-shrink:0}
   .doc-back:hover{background:rgba(124,58,237,.08)}
@@ -241,8 +235,6 @@
   .doc-card-preview{font-size:12.5px;color:var(--ink-2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px}
   .doc-card-meta{font-size:11px;color:var(--ink-3)}
   .card.doc-type .c-acts{flex-direction:column;gap:2px;align-self:flex-start}
-  .fab:active{transform:scale(.93)}
-  .fab svg{width:22px;height:22px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
 
   /* ---------- MODAL (sheet) ---------- */
   .scrim{position:fixed;inset:0;z-index:100;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
