@@ -538,6 +538,19 @@
       <option value="h3">Nagłówek 3</option>
       <option value="blockquote">Cytat</option>
     </select>
+    <select class="doc-fmt-select" id="docFontSizeSel" onchange="applyFontSize(this.value)" title="Rozmiar czcionki" style="width:54px">
+      <option value="">Aa</option>
+      <option value="10">10</option>
+      <option value="12">12</option>
+      <option value="14">14</option>
+      <option value="16">16</option>
+      <option value="18">18</option>
+      <option value="20">20</option>
+      <option value="24">24</option>
+      <option value="28">28</option>
+      <option value="32">32</option>
+      <option value="40">40</option>
+    </select>
     <div class="doc-fmt-sep"></div>
     <button class="doc-fmt-btn" onclick="fmt('bold')" title="Pogrubienie (Ctrl+B)"><b>B</b></button>
     <button class="doc-fmt-btn" onclick="fmt('italic')" title="Kursywa (Ctrl+I)"><i>I</i></button>
@@ -1567,9 +1580,34 @@ function toggleDocFolderDrop(){
 }
 
 // Formatowanie
+let docSavedRange=null;
+document.addEventListener("selectionchange",()=>{
+  const sel=window.getSelection();
+  if(sel.rangeCount&&$("#docBodyField").contains(sel.anchorNode))docSavedRange=sel.getRangeAt(0).cloneRange();
+});
+function restoreDocSelection(){
+  if(!docSavedRange)return;
+  const sel=window.getSelection();
+  sel.removeAllRanges();sel.addRange(docSavedRange);
+}
 function fmt(cmd,val){
   $("#docBodyField").focus();
   document.execCommand(cmd,false,val||null);
+  updateToolbarState();
+}
+function applyFontSize(px){
+  if(!px)return;
+  const body=$("#docBodyField");
+  body.focus();restoreDocSelection();
+  document.execCommand("styleWithCSS",false,false);
+  document.execCommand("fontSize",false,"7");
+  body.querySelectorAll('font[size="7"]').forEach(f=>{
+    const span=document.createElement("span");
+    span.style.fontSize=px+"px";
+    while(f.firstChild)span.appendChild(f.firstChild);
+    span.querySelectorAll('span[style*="font-size"]').forEach(s=>{s.style.fontSize="";if(!s.getAttribute("style"))s.removeAttribute("style");});
+    f.replaceWith(span);
+  });
   updateToolbarState();
 }
 function applyStyle(tag){
@@ -1578,10 +1616,17 @@ function applyStyle(tag){
   updateToolbarState();
 }
 function updateToolbarState(){
-  ["bold","italic","underline","strikeThrough"].forEach(cmd=>{
+  ["bold","italic","underline","strikeThrough","insertUnorderedList","insertOrderedList"].forEach(cmd=>{
     const btn=document.querySelector(`.doc-fmt-btn[onclick="fmt('${cmd}')"]`);
     if(btn)btn.classList.toggle("active",document.queryCommandState(cmd));
   });
+  const sel=window.getSelection();
+  const sizeSel=$("#docFontSizeSel");
+  if(sizeSel&&sel.rangeCount&&$("#docBodyField").contains(sel.anchorNode)){
+    const el=sel.anchorNode.nodeType===1?sel.anchorNode:sel.anchorNode.parentElement;
+    const px=Math.round(parseFloat(getComputedStyle(el).fontSize));
+    sizeSel.value=[...sizeSel.options].some(o=>o.value===String(px))?String(px):"";
+  }
 }
 function updateWordCount(){
   const text=($("#docBodyField")?.innerText||"").trim();
