@@ -263,3 +263,5 @@ async function readText(request) {
   }
   return await request.text();
 }
+
+// deploy: 2026-07-18 12:4x aktywacja NOTES_PASSWORD
