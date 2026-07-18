@@ -443,6 +443,20 @@
     .logs-body{max-height:150px}
     .logs:not(.collapsed){bottom:calc(env(safe-area-inset-bottom) + 88px)}
   }
+
+  /* ── ekran blokady ── */
+  .lock-screen{position:fixed;inset:0;z-index:400;background:var(--bg);display:none;align-items:center;justify-content:center;padding:24px}
+  .lock-screen.show{display:flex}
+  .lock-card{width:100%;max-width:320px;text-align:center}
+  .lock-icon{width:72px;height:72px;margin:0 auto 18px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:var(--shadow-md)}
+  .lock-icon svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .lock-card h2{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px}
+  .lock-card p{font-size:13px;color:var(--ink-2);margin-bottom:20px}
+  .lock-input{width:100%;height:46px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:0 14px;font-size:16px;font-family:inherit;color:var(--ink);outline:none;text-align:center;transition:border-color .15s}
+  .lock-input:focus{border-color:var(--accent)}
+  .lock-btn{width:100%;height:46px;margin-top:12px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:opacity .15s}
+  .lock-btn:disabled{opacity:.5;cursor:default}
+  .lock-error{font-size:13px;color:var(--red);margin-top:12px;min-height:18px}
 </style>
 </head>
 <body>
@@ -677,11 +691,72 @@
   <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
 </button>
 
+<!-- EKRAN BLOKADY -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+    <h2>Notatki</h2>
+    <p>Podaj hasło, aby uzyskać dostęp</p>
+    <input type="password" class="lock-input" id="lockInput" placeholder="Hasło" autocomplete="current-password" enterkeyhint="go">
+    <button class="lock-btn" id="lockBtn" onclick="submitLock()">Odblokuj</button>
+    <div class="lock-error" id="lockError"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const $=s=>document.querySelector(s);
 const API="https://notatki-glosowe.maciekwojciechowski03.workers.dev";
+
+// ── Blokada hasłem ──
+const TOKEN_KEY="notatki_token";
+let apiToken=localStorage.getItem(TOKEN_KEY)||"";
+const _origFetch=window.fetch.bind(window);
+window.fetch=(url,opts)=>{
+  opts=opts||{};
+  if(typeof url==="string"&&url.startsWith(API)){
+    opts.headers=Object.assign({},opts.headers||{},{"X-Token":apiToken});
+  }
+  return _origFetch(url,opts);
+};
+async function sha256Hex(str){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function showLock(msg){
+  $("#lockError").textContent=msg||"";
+  $("#lockScreen").classList.add("show");
+  setTimeout(()=>$("#lockInput").focus(),100);
+}
+function hideLock(){
+  $("#lockScreen").classList.remove("show");
+  $("#lockInput").value="";
+  $("#lockError").textContent="";
+}
+async function submitLock(){
+  const pw=$("#lockInput").value;
+  if(!pw)return;
+  const btn=$("#lockBtn");btn.disabled=true;
+  try{
+    const candidate=await sha256Hex(pw);
+    const r=await _origFetch(API+"/list",{headers:{"X-Token":candidate}});
+    if(r.status===401){
+      $("#lockError").textContent="Nieprawidłowe hasło";
+      $("#lockInput").value="";$("#lockInput").focus();
+    }else{
+      apiToken=candidate;
+      localStorage.setItem(TOKEN_KEY,apiToken);
+      hideLock();load();
+    }
+  }catch(e){
+    $("#lockError").textContent="Brak połączenia — spróbuj ponownie";
+  }
+  btn.disabled=false;
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  $("#lockInput").addEventListener("keydown",e=>{if(e.key==="Enter")submitLock();});
+});
 
 // ---- ikony folderów (zestaw do wyboru) ----
 const ICONS={
@@ -748,7 +823,14 @@ function notesIn(fid,sub){return notes.filter(n=>n.folder===fid&&(sub===undefine
 async function load(){
   $("#list").innerHTML='<div class="loading"><div class="ring"></div></div>';
   try{
-    const r=await fetch(API+"/list");const d=await r.json();
+    const r=await fetch(API+"/list");
+    if(r.status===401){
+      apiToken="";localStorage.removeItem(TOKEN_KEY);
+      $("#list").innerHTML="";
+      showLock();
+      return;
+    }
+    const d=await r.json();
     notes=d.notes||[];folders=d.folders||[];
     if(!folders.length)folders=[{id:"inne",name:"Inne",icon:"inne",grad:"gray",subs:[]}];
     if(activeFolder!==ALL_ID&&!F(activeFolder))activeFolder=folders[0].id;

@@ -42,8 +42,11 @@ export default {
     const path = url.pathname;
 
     if (env.API_TOKEN) {
-      const t = request.headers.get("X-Token") || url.searchParams.get("token");
-      if (t !== env.API_TOKEN) return json({ ok: false, error: "Brak autoryzacji" }, 401);
+      // Akceptuj hash SHA-256 hasła (aplikacja web) albo czyste hasło (skrót iOS: ?token=hasło)
+      const t = request.headers.get("X-Token") || url.searchParams.get("token") || "";
+      let authorized = t === env.API_TOKEN;
+      if (!authorized && t) authorized = (await sha256Hex(t)) === env.API_TOKEN;
+      if (!authorized) return json({ ok: false, error: "Brak autoryzacji" }, 401);
     }
 
     try {
@@ -195,6 +198,11 @@ export default {
     }
   },
 };
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 async function getNotes(env) {
   const raw = await env.NOTATKI_KV.get("notes");

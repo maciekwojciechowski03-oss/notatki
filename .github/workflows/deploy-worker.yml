@@ -17,8 +17,21 @@ jobs:
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          NOTES_PASSWORD: ${{ secrets.NOTES_PASSWORD }}
         run: |
-          METADATA='{"main_module":"worker.js","bindings":[{"type":"kv_namespace","name":"NOTATKI_KV","namespace_id":"bbf74bec01324dbebd92391c0df9c5bf"}]}'
+          BINDINGS='[{"type":"kv_namespace","name":"NOTATKI_KV","namespace_id":"bbf74bec01324dbebd92391c0df9c5bf"}]'
+
+          # Jeśli ustawiono sekret NOTES_PASSWORD, wgraj hash hasła jako API_TOKEN
+          if [ -n "$NOTES_PASSWORD" ]; then
+            TOKEN_HASH=$(printf '%s' "$NOTES_PASSWORD" | sha256sum | cut -d' ' -f1)
+            BINDINGS='[{"type":"kv_namespace","name":"NOTATKI_KV","namespace_id":"bbf74bec01324dbebd92391c0df9c5bf"},{"type":"secret_text","name":"API_TOKEN","text":"'"$TOKEN_HASH"'"}]'
+            echo "Ochrona hasłem: WŁĄCZONA"
+          else
+            echo "Ochrona hasłem: brak sekretu NOTES_PASSWORD (worker bez zmian w API_TOKEN)"
+          fi
+
+          # keep_bindings zachowuje istniejące sekrety (np. GEMINI_API_NOTES) przy każdym deployu
+          METADATA='{"main_module":"worker.js","keep_bindings":["secret_text"],"bindings":'"$BINDINGS"'}'
 
           RESPONSE=$(curl -s -X PUT \
             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/workers/scripts/notatki-glosowe" \
