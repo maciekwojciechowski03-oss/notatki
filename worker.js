@@ -1,5 +1,5 @@
 // ============================================================
-//  NOTATKI GŁOSOWE — Cloudflare Worker (v3: foldery dynamiczne)
+//  NOTATKI GŁOSOWE — Cloudflare Worker (v4: foldery dynamiczne + ochrona hasłem)
 //
 //  MODEL DANYCH w KV:
 //    "folders" -> [{ id, name, icon, grad, subs:[{id,name}] }]
