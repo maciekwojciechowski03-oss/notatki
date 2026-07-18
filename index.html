@@ -1644,6 +1644,57 @@ $("#docBodyField").addEventListener("input",()=>{updateWordCount();updateToolbar
 $("#docBodyField").addEventListener("keyup",updateToolbarState);
 $("#docBodyField").addEventListener("mouseup",updateToolbarState);
 
+// Wklejanie: zachowaj formatowanie, wyczyść śmieci, zwykły tekst z podziałem na linie
+const DOC_PASTE_TAGS=new Set(["P","BR","DIV","SPAN","B","STRONG","I","EM","U","S","STRIKE","UL","OL","LI","H1","H2","H3","BLOCKQUOTE","A","FONT"]);
+const DOC_PASTE_STYLES=["font-size","font-weight","font-style","text-decoration","color","background-color","text-align"];
+function sanitizePastedHTML(html){
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  doc.querySelectorAll("script,style,meta,link,title,img,svg,video,audio,iframe,object,form,input,button").forEach(el=>el.remove());
+  const comments=[];const it=doc.createNodeIterator(doc.body,NodeFilter.SHOW_COMMENT);
+  let c;while(c=it.nextNode())comments.push(c);comments.forEach(n=>n.remove());
+  const walk=el=>{
+    [...el.children].forEach(child=>{
+      walk(child);
+      if(!DOC_PASTE_TAGS.has(child.tagName)){
+        while(child.firstChild)el.insertBefore(child.firstChild,child);
+        child.remove();
+      }else{
+        const style=child.getAttribute("style");
+        const href=child.tagName==="A"?child.getAttribute("href"):null;
+        [...child.attributes].forEach(a=>child.removeAttribute(a.name));
+        if(href&&/^https?:/i.test(href))child.setAttribute("href",href);
+        if(style){
+          const kept=style.split(";").map(s=>s.trim()).filter(s=>DOC_PASTE_STYLES.some(p=>s.toLowerCase().startsWith(p)));
+          if(kept.length)child.setAttribute("style",kept.join(";"));
+        }
+      }
+    });
+  };
+  walk(doc.body);
+  return doc.body.innerHTML;
+}
+$("#docBodyField").addEventListener("paste",e=>{
+  const cd=e.clipboardData;
+  if(!cd)return;
+  e.preventDefault();
+  const html=cd.getData("text/html");
+  if(html){
+    document.execCommand("insertHTML",false,sanitizePastedHTML(html));
+  }else{
+    const txt=cd.getData("text/plain");
+    const esc=txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    document.execCommand("insertHTML",false,esc.replace(/\r?\n/g,"<br>"));
+  }
+  updateWordCount();updateToolbarState();
+});
+$("#docTitleField").addEventListener("paste",e=>{
+  const cd=e.clipboardData;
+  if(!cd)return;
+  e.preventDefault();
+  const txt=cd.getData("text/plain").replace(/\s+/g," ").trim();
+  document.execCommand("insertText",false,txt);
+});
+
 // Skróty klawiszowe
 $("#docBodyField").addEventListener("keydown",e=>{
   if((e.ctrlKey||e.metaKey)){
